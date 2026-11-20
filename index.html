@@ -1708,7 +1708,7 @@ function typedBox(id,gen,key,clean){
     fb.innerHTML=`<b>${ok?u("ok"):near?u("almost"):u("bad")}</b>${ok?"":`<span class="dblock">${diffBlock(v,cur.ans,cur.prefix)}</span>`}${cur.explain?`<span>${cur.explain()}</span>`:""}`;
     q(".tCheck").hidden=true;q(".tNext").textContent=u("nextTask");q(".tNext").focus({preventScroll:true});stat()}
   q(".tCheck").onclick=chk;q(".tNext").onclick=nxt;inp.addEventListener("keydown",e=>{if(e.key==="Enter"){e.preventDefault();inp.disabled?nxt():chk()}});
-  sec.start=()=>{if(!cur)nxt();else{q(".tCheck").textContent=u("check");stat()}};sec.relang=()=>{if(cur){const c=cur;q(".tPrompt").innerHTML=c.promptFn?c.promptFn():c.prompt;q(".tHintTxt").textContent=c.hintFn?c.hintFn():c.hint||"";q(".tNext").textContent=inp.disabled?u("nextTask"):u("skip")}q(".tCheck").textContent=u("check");stat()};
+  sec.start=()=>{if(!cur)nxt();else{q(".tCheck").textContent=u("check");stat()}};sec.reset=nxt;sec.relang=()=>{if(cur){const c=cur;q(".tPrompt").innerHTML=c.promptFn?c.promptFn():c.prompt;q(".tHintTxt").textContent=c.hintFn?c.hintFn():c.hint||"";q(".tNext").textContent=inp.disabled?u("nextTask"):u("skip")}q(".tCheck").textContent=u("check");stat()};
   return sec;
 }
 function mcBox(id,gen,key){
@@ -1721,7 +1721,7 @@ function mcBox(id,gen,key){
   function pick(b,t){const ok=t===cur.a;sec.querySelectorAll(".opt").forEach(x=>{x.disabled=true;if(x.lastChild.textContent===cur.a)x.classList.add("right")});if(!ok)b.classList.add("wrong");
     n++;if(ok){r++;streak++}else streak=0;tStat(key,ok);const fb=q(".tFb");fb.hidden=false;fb.className="fb tFb "+(ok?"ok":"bad");fb.innerHTML=`<b>${ok?u("ok"):u("bad")}</b>${cur.explain?`<span>${cur.explain()}</span>`:""}`;q(".tNext").textContent=u("nextTask");q(".tNext").focus({preventScroll:true});stat()}
   q(".tNext").onclick=nxt;sec.addEventListener("keydown",e=>{if(/^[1-5]$/.test(e.key)){const b=sec.querySelectorAll(".opt")[+e.key-1];if(b&&!b.disabled)b.click()}});
-  sec.start=()=>{if(!cur)nxt();else stat()};sec.relang=()=>{if(cur){q(".tHintTxt").textContent=cur.hintFn()}stat()};return sec;
+  sec.start=()=>{if(!cur)nxt();else stat()};sec.reset=nxt;sec.relang=()=>{if(cur){q(".tHintTxt").textContent=cur.hintFn()}stat()};return sec;
 }
 const L2=(ru,en)=>LANG==="en"?en:ru;
 const profBox=typedBox("profBox",()=>{const p=rnd(PROF),toF=Math.random()<0.65,m=p[0],fs=p.slice(1);
@@ -1774,10 +1774,15 @@ $("#wCheck").onclick=wCheck;$("#wSample").onclick=()=>{const o=$("#wSampleOut");
 $("#rdCheck").onclick=rdCheck;$("#rdNext").onclick=rdNew;
 const TRMODES=[["conj","mConj","conjBox"],["build","mBuild","buildBox"],["decl","mDecl","declBox"],["tense","mTense","tenseBox"],["prof","mProf","profBox"],["qa","mQa","qaBox"],["odd","mOdd","oddBox"],["read","mRead","readBox"],["write","mWrite","writeBox"]];
 $("#trMode").className="chips trModes";$("#trMode").innerHTML=TRMODES.map(([v,k])=>`<button class="chip" data-v="${v}" data-k="${k}" aria-pressed="false"></button>`).join("");
-setTrMode=function(m){trMode=m;document.querySelectorAll("#trMode button").forEach(b=>b.setAttribute("aria-pressed",b.dataset.v===m));
+setTrMode=function(m){const prev=trMode;trMode=m;document.querySelectorAll("#trMode button").forEach(b=>b.setAttribute("aria-pressed",b.dataset.v===m));
   TRMODES.forEach(([v,,id])=>$("#"+id).hidden=v!==m);
-  if(m==="conj"&&!trCur)newTask();if(m==="build"&&!bCur)bNew();
-  const box=$("#"+TRMODES.find(x=>x[0]===m)[2]);if(box.start)box.start();if(m==="read"&&!rdCur)rdNew()};
+  if(prev==="oral"&&m!=="oral"&&typeof oStop==="function")oStop();
+  const box=$("#"+TRMODES.find(x=>x[0]===m)[2]);
+  if(prev!==m){ // switched to another mode: always start fresh
+    if(m==="conj")newTask();else if(m==="build")bNew();else if(m==="read")rdNew();else if(box.reset)box.reset();
+  }else{
+    if(m==="conj"&&!trCur)newTask();if(m==="build"&&!bCur)bNew();if(m==="read"&&!rdCur)rdNew();if(box.start)box.start();
+  }};
 document.querySelectorAll("#trMode button").forEach(b=>b.onclick=()=>setTrMode(b.dataset.v));
 function relangTrainer(){[profBox,declBox,tenseBox,qaBox,oddBox].forEach(b=>b.relang&&b.relang())}
 
@@ -1855,7 +1860,7 @@ function oReveal(){const a=$("#oAns");a.hidden=false;a.innerHTML=`<span class="s
 $("#oShow").onclick=oReveal;$("#oNext").onclick=oNew;
 document.querySelectorAll("#oSrc button").forEach(b=>b.onclick=()=>{oSrc=b.dataset.v;oNew()});
 document.querySelectorAll("#oSec button").forEach(b=>b.onclick=()=>{oSecs=+b.dataset.v;store.set("sk_osec",oSecs);if(!oTimerId){oLeft=oSecs;oTick()}oRender()});
-numBox.start=numBox.start;dlgBox.start=()=>{if(!dCur)dNew()};oralBox.start=()=>{if(!oCur)oNew();else oRender()};
+numBox.start=numBox.start;dlgBox.start=()=>{if(!dCur)dNew()};dlgBox.reset=dNew;oralBox.start=()=>{if(!oCur)oNew();else oRender()};oralBox.reset=oNew;
 TRMODES.push(["num","mNum","numBox"],["dlg","mDlg","dlgBox"],["oral","mOral","oralBox"]);
 $("#trMode").innerHTML=TRMODES.map(([v,k])=>`<button class="chip" data-v="${v}" data-k="${k}" aria-pressed="false"></button>`).join("");
 document.querySelectorAll("#trMode button").forEach(b=>b.onclick=()=>setTrMode(b.dataset.v));
