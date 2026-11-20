@@ -1,0 +1,1003 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Slovenčina A1 – test</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500&display=swap">
+<style>
+/* Layout: a single study column; lesson colours borrowed from the textbook's coloured section bars (pink L4, orange L5, yellow L6). */
+:root{
+  --bg:#f6f7fb; --surface:#ffffff; --fg:#1b1d2a; --muted:#5d6278; --line:#dfe2ec;
+  --accent:#3b4fd8; --accent-ink:#ffffff;
+  --ok:#1f8a53; --ok-bg:#e3f5ea; --bad:#c2372f; --bad-bg:#fbe7e5; --warn:#a26300; --warn-bg:#fdf1db;
+  --l1:#6f7fe0; --l2:#2fa3a0; --l3:#8d63d6; --l4:#d9709f; --l5:#dd8a3a; --l6:#d6b21f; --lp:#5a7d3a;
+  --display:"Bricolage Grotesque", "Inter", system-ui, sans-serif;
+  --body:"Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --mono:"JetBrains Mono", ui-monospace, Menlo, monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#12131b; --surface:#1b1d29; --fg:#ecedf5; --muted:#a3a7bd; --line:#2d3042;
+  --accent:#8796ff; --accent-ink:#10122a;
+  --ok:#5fd394; --ok-bg:#163223; --bad:#ff8a80; --bad-bg:#3a1c1b; --warn:#f2b552; --warn-bg:#382a12;
+  color-scheme:dark;
+}}
+:root[data-theme="dark"]{
+  --bg:#12131b; --surface:#1b1d29; --fg:#ecedf5; --muted:#a3a7bd; --line:#2d3042;
+  --accent:#8796ff; --accent-ink:#10122a;
+  --ok:#5fd394; --ok-bg:#163223; --bad:#ff8a80; --bad-bg:#3a1c1b; --warn:#f2b552; --warn-bg:#382a12;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font-family:var(--body);font-size:16px;line-height:1.5;
+  padding-left:max(16px, env(safe-area-inset-left, 0px));padding-right:max(16px, env(safe-area-inset-right, 0px));padding-block:28px 48px}
+.wrap{max-width:720px;margin:0 auto;display:flex;flex-direction:column;gap:22px}
+h1{font-family:var(--display);font-weight:800;font-size:clamp(2rem,6vw,2.8rem);line-height:1.05;margin:0;letter-spacing:-.02em;text-wrap:balance}
+h1 .flag{display:inline-flex;gap:3px;vertical-align:middle;margin-left:10px}
+h1 .flag i{width:10px;height:28px;border-radius:2px;display:block}
+.lead{color:var(--muted);margin:6px 0 0;max-width:60ch}
+h2{font-family:var(--display);font-weight:600;font-size:1.15rem;margin:0}
+.label{font-size:.75rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:600}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:20px;display:flex;flex-direction:column;gap:16px}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{appearance:none;border:1.5px solid var(--line);background:transparent;color:var(--fg);border-radius:999px;padding:7px 12px 7px 10px;font:500 .9rem var(--body);cursor:pointer;display:inline-flex;align-items:center;gap:8px}
+.chip .dot{width:10px;height:10px;border-radius:50%;background:var(--c)}
+.chip .n{color:var(--muted);font-size:.8rem;font-variant-numeric:tabular-nums}
+.chip[aria-pressed="true"]{border-color:var(--c);background:color-mix(in srgb, var(--c) 16%, transparent)}
+.chip:focus-visible,.btn:focus-visible,.opt:focus-visible,input:focus-visible,.key:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.row{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.seg{display:inline-flex;border:1.5px solid var(--line);border-radius:10px;overflow:hidden}
+.seg button{appearance:none;border:0;background:transparent;color:var(--fg);padding:8px 14px;font:500 .9rem var(--body);cursor:pointer}
+.seg button[aria-pressed="true"]{background:var(--accent);color:var(--accent-ink)}
+.btn{appearance:none;border:0;border-radius:10px;padding:12px 18px;font:600 1rem var(--body);cursor:pointer;background:var(--accent);color:var(--accent-ink)}
+.btn.ghost{background:transparent;color:var(--fg);border:1.5px solid var(--line)}
+.btn:disabled{opacity:.45;cursor:default}
+.small{font-size:.88rem;color:var(--muted)}
+.linkbtn{appearance:none;background:none;border:0;color:var(--accent);font:500 .9rem var(--body);cursor:pointer;padding:0;text-decoration:underline}
+/* quiz */
+.bar{height:6px;background:var(--line);border-radius:3px;overflow:hidden}
+.bar i{display:block;height:100%;background:var(--accent);width:0;transition:width .3s}
+.qhead{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+.tag{display:inline-flex;align-items:center;gap:6px;font-size:.8rem;font-weight:600;color:var(--muted)}
+.tag .dot{width:8px;height:8px;border-radius:50%;background:var(--c)}
+.count{font-family:var(--mono);font-size:.85rem;color:var(--muted);font-variant-numeric:tabular-nums}
+.question{font-family:var(--display);font-weight:600;font-size:clamp(1.25rem,4vw,1.55rem);line-height:1.3;margin:0;text-wrap:balance}
+.question em{font-style:normal;background:color-mix(in srgb,var(--accent) 14%, transparent);padding:0 4px;border-radius:4px}
+.hint{color:var(--muted);font-size:.92rem;margin-top:-6px}
+.opts{display:grid;gap:10px}
+.opt{appearance:none;text-align:left;border:1.5px solid var(--line);background:var(--surface);color:var(--fg);border-radius:10px;padding:12px 14px;font:500 1.02rem var(--body);cursor:pointer;display:flex;gap:12px;align-items:flex-start}
+.opt .k{font-family:var(--mono);font-size:.8rem;color:var(--muted);border:1px solid var(--line);border-radius:5px;padding:1px 6px;flex:none;margin-top:2px}
+.opt:hover:not(:disabled){border-color:var(--accent)}
+.opt:disabled{cursor:default}
+.opt.right{border-color:var(--ok);background:var(--ok-bg)}
+.opt.wrong{border-color:var(--bad);background:var(--bad-bg)}
+.inrow{display:flex;gap:10px;flex-wrap:wrap}
+.inrow input{flex:1 1 220px;min-width:0;font:500 1.1rem var(--body);padding:12px 14px;border-radius:10px;border:1.5px solid var(--line);background:var(--surface);color:var(--fg)}
+.inrow input.right{border-color:var(--ok);background:var(--ok-bg)}
+.inrow input.wrong{border-color:var(--bad);background:var(--bad-bg)}
+.keys{display:flex;flex-wrap:wrap;gap:6px}
+.key{appearance:none;border:1px solid var(--line);background:var(--bg);color:var(--fg);border-radius:6px;min-width:34px;padding:6px 8px;font:500 1rem var(--body);cursor:pointer}
+.fb{border-radius:10px;padding:12px 14px;display:flex;flex-direction:column;gap:4px}
+.fb.ok{background:var(--ok-bg);color:var(--fg)} .fb.ok b{color:var(--ok)}
+.fb.bad{background:var(--bad-bg)} .fb.bad b{color:var(--bad)}
+.fb.warn{background:var(--warn-bg)} .fb.warn b{color:var(--warn)}
+.fb .ans{font-weight:600}
+.actions{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap}
+/* results */
+.score{font-family:var(--display);font-weight:800;font-size:clamp(3rem,12vw,4.5rem);line-height:1;letter-spacing:-.03em}
+.verdict{font-size:1.05rem}
+.topics{display:grid;gap:8px}
+.trow{display:grid;grid-template-columns:minmax(0,1fr) 110px 56px;gap:10px;align-items:center;font-size:.92rem}
+.trow .mini{height:8px;background:var(--line);border-radius:4px;overflow:hidden}
+.trow .mini i{display:block;height:100%;background:var(--c)}
+.trow .pct{text-align:right;font-variant-numeric:tabular-nums;color:var(--muted)}
+.mist{display:flex;flex-direction:column;gap:10px;margin:0;padding:0;list-style:none}
+.mist li{border-left:3px solid var(--bad);padding:4px 0 4px 12px;display:flex;flex-direction:column;gap:2px;min-width:0}
+.mist .q{font-weight:600}
+.mist .yours{color:var(--bad);font-size:.9rem}
+.mist .corr{color:var(--ok);font-size:.9rem}
+.mist .ex{color:var(--muted);font-size:.88rem}
+@media (prefers-reduced-motion:reduce){.bar i{transition:none}}
+@media (max-width:440px){.trow{grid-template-columns:minmax(0,1fr) 70px 46px}}
+.tabs{display:flex;gap:4px;border-bottom:1.5px solid var(--line);position:sticky;top:env(safe-area-inset-top,0px);background:var(--bg);z-index:5;padding-top:6px}
+.tabs a{padding:10px 14px;color:var(--muted);text-decoration:none;font-weight:600;border-bottom:3px solid transparent;margin-bottom:-1.5px}
+.tabs a[aria-selected="true"]{color:var(--fg);border-bottom-color:var(--accent)}
+.tabs a:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.gram h2 .q{font-family:var(--body);font-weight:500;color:var(--muted);font-size:.85rem}
+.ghead{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+.btn.sm{padding:7px 12px;font-size:.88rem}
+.toc{display:flex;flex-wrap:wrap;gap:6px 14px}
+.toc a{color:var(--accent);font-size:.92rem;text-decoration:none}
+.toc a:hover{text-decoration:underline}
+.rules{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:8px}
+.sk{font-style:italic}
+.tw{overflow-x:auto}
+.tw table{border-collapse:collapse;width:100%;font-size:.93rem;min-width:460px}
+.tw table.two{min-width:0}
+.tw th,.tw td{border-bottom:1px solid var(--line);padding:8px 10px;text-align:left;vertical-align:top}
+.tw thead th{font-size:.75rem;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);font-weight:600}
+.tw tbody th{font-weight:600;white-space:nowrap}
+.tw td b{color:var(--accent)}
+.tw .q{text-transform:none;letter-spacing:0;font-weight:400}
+.note{margin:0;color:var(--muted);font-size:.93rem}
+.note b{color:var(--fg)}
+.gram{scroll-margin-top:60px}
+.cardzone{align-items:stretch}
+.fcard{appearance:none;border:1.5px solid var(--line);background:var(--bg);color:var(--fg);border-radius:16px;min-height:230px;padding:24px 18px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;cursor:pointer;text-align:center;font-family:var(--body)}
+.fcard:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.fcard.flipped{border-color:var(--accent)}
+.fmeta{display:flex;gap:8px;align-items:center;font-size:.78rem;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.06em}
+.fmeta .dot{width:8px;height:8px;border-radius:50%;background:var(--c)}
+.fword{font-family:var(--display);font-weight:800;font-size:clamp(1.7rem,7vw,2.5rem);line-height:1.15;overflow-wrap:anywhere}
+.fback{font-size:1.25rem;font-weight:500;color:var(--accent);overflow-wrap:anywhere}
+.ftap{font-size:.82rem;color:var(--muted)}
+.cbtns{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.gender{font-family:var(--mono);font-size:.75rem;border:1px solid var(--line);border-radius:5px;padding:0 5px}
+</style>
+<style>[hidden]{display:none!important}img{max-width:100%}</style>
+</head>
+<body>
+
+
+<div class="wrap">
+  <header>
+    <h1>Slovenčina A1 <span class="flag" aria-hidden="true"><i style="background:#fff;border:1px solid var(--line)"></i><i style="background:#1f4fb5"></i><i style="background:#d52b1e"></i></span></h1>
+    <p class="lead">Подготовка к тесту по учебнику A1: тест с объяснениями, грамматика из приложения в конце учебника и карточки со словами из словаря по урокам.</p>
+  </header>
+
+<nav class="tabs" role="tablist">
+  <a href="#test" data-v="test" role="tab">Тест</a>
+  <a href="#gramatika" data-v="gramatika" role="tab">Грамматика</a>
+  <a href="#karticky" data-v="karticky" role="tab">Карточки</a>
+</nav>
+
+<div id="vTest">
+  <!-- START -->
+  <section id="start" class="panel">
+    <div class="row" style="justify-content:space-between">
+      <h2>Темы</h2>
+      <div class="row"><button class="linkbtn" id="allOn">выбрать все</button><button class="linkbtn" id="allOff">снять</button></div>
+    </div>
+    <div class="chips" id="topicChips"></div>
+    <div class="row" style="gap:16px">
+      <div style="display:flex;flex-direction:column;gap:6px">
+        <span class="label">Сколько вопросов</span>
+        <div class="seg" id="lenSeg">
+          <button data-v="20" aria-pressed="false">20</button>
+          <button data-v="50" aria-pressed="true">50</button>
+          <button data-v="all" aria-pressed="false">все</button>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <button class="btn" id="go">Начать тест</button>
+      <button class="btn ghost" id="goGram">Тест по грамматике</button>
+      <button class="btn ghost" id="goMist" hidden>Только мои ошибки (<span id="mistN">0</span>)</button>
+    </div>
+    <p class="small" id="poolInfo"></p>
+  </section>
+
+  <!-- QUIZ -->
+  <section id="quiz" class="panel" hidden>
+    <div class="bar" aria-hidden="true"><i id="barFill"></i></div>
+    <div class="qhead">
+      <span class="tag" id="qTag"><span class="dot"></span><span></span></span>
+      <span class="count" id="qCount"></span>
+    </div>
+    <p class="question" id="qText"></p>
+    <p class="hint" id="qHint" hidden></p>
+    <div class="opts" id="opts"></div>
+    <div id="inBox" hidden style="display:flex;flex-direction:column;gap:10px">
+      <div class="inrow">
+        <input id="ans" type="text" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="Напишите ответ">
+        <button class="btn" id="check">Проверить</button>
+      </div>
+      <div class="keys" id="keys" aria-label="Словацкие буквы"></div>
+    </div>
+    <div id="fb" class="fb" hidden></div>
+    <div class="actions">
+      <button class="btn ghost" id="quit">Закончить</button>
+      <button class="btn" id="next" hidden>Дальше →</button>
+    </div>
+  </section>
+
+  <!-- RESULT -->
+  <section id="result" class="panel" hidden>
+    <span class="label">Результат</span>
+    <div class="row" style="gap:18px;align-items:baseline">
+      <div class="score" id="rScore"></div>
+      <div class="verdict" id="rVerdict"></div>
+    </div>
+    <h2>По темам</h2>
+    <div class="topics" id="rTopics"></div>
+    <div class="row">
+      <button class="btn" id="retryMist">Повторить ошибки</button>
+      <button class="btn ghost" id="toStart">Новый тест</button>
+    </div>
+    <h2 id="mistTitle">Ошибки</h2>
+    <ul class="mist" id="rMist"></ul>
+  </section>
+
+</div>
+<div id="vGram" hidden>
+  <section class="panel gram">
+    <p class="small" style="margin:0">Грамматика из приложения в конце учебника (Prílohy A–D). У каждого блока есть кнопка «Проверить себя» — короткий тест только по этой таблице.</p>
+    <nav class="toc">
+      <a href="#g-fon">A. Фонетика</a><a href="#g-nom">B1. Род, Nominatív</a><a href="#g-aku">B2. Akuzatív</a><a href="#g-pron">Местоимения</a><a href="#g-pl">B3. Plurál</a><a href="#g-pre">C1. Prézent</a><a href="#g-fut">C2. Futúrum</a><a href="#g-mod">C3. Modálne</a><a href="#g-imp">C4. Imperatív</a><a href="#g-pret">C5. Préteritum</a><a href="#g-tri">D. Фразы на уроке</a>
+    </nav>
+  </section>
+
+  <section class="panel gram" id="g-fon">
+    <div class="ghead"><h2>A. Фонетика</h2><button class="btn ghost sm" data-quiz="fon">Проверить себя</button></div>
+    <ul class="rules">
+      <li><b>Долгие гласные:</b> á, é, í, ó, ú, ý и долгие слоговые <b>ĺ, ŕ</b> (vĺča, vŕba). Долгота меняет смысл: <span class="sk">chyba</span> (ошибка) – <span class="sk">chýba</span> (не хватает), <span class="sk">pila</span> (пила, она) – <span class="sk">píla</span> (пила, инструмент).</li>
+      <li><b>Дифтонги:</b> <span class="sk">ia, ie, iu, ô</span> — один слог: <span class="sk">riad, mlieko, cudziu, stôl</span> [стуол].</li>
+      <li><b>ä</b> читается как «э»: <span class="sk">mäso</span>.</li>
+      <li><b>Мягкие согласные:</b> <span class="sk">ď, ť, ň, ľ, č, š, ž, c, dz, dž, j</span>. Перед <b>e, i, í, ie</b> буквы d, t, n, l читаются мягко без значка: <span class="sk">deti</span> [ďeťi], <span class="sk">nebo</span> [ňebo].</li>
+      <li><b>Твёрдые:</b> <span class="sk">d, t, n, l, k, g, h, ch</span> — после них обычно пишется <b>y</b>: <span class="sk">ty, chyba, kniha → knihy</span>.</li>
+      <li><b>ch</b> — одна буква и один звук (как русское «х»); <b>h</b> — звонкое, как украинское «г».</li>
+      <li><b>Ритмическое правило:</b> два долгих слога подряд не ставятся: <span class="sk">krásn<b>u</b></span> (не krásnú), <span class="sk">múdr<b>y</b></span>, <span class="sk">populárn<b>i</b></span>.</li>
+    </ul>
+  </section>
+
+  <section class="panel gram" id="g-nom">
+    <div class="ghead"><h2>B1. Род и Nominatív singuláru <span class="q">(kto? čo?)</span></h2><button class="btn ghost sm" data-quiz="dek">Проверить себя</button></div>
+    <div class="tw"><table>
+      <thead><tr><th></th><th>вопрос</th><th>местоимения</th><th>прилагательное</th><th>существительное</th></tr></thead>
+      <tbody>
+        <tr><th>M</th><td>ktorý? čí? aký?</td><td>môj, tvoj, náš, váš, ten, jeden</td><td>dlh<b>ý</b>, slávn<b>y</b>, cudz<b>í</b></td><td>stôl<b>-ø</b>, muž<b>-ø</b>, dedk<b>o</b>, futbalist<b>a</b></td></tr>
+        <tr><th>F</th><td>ktorá? čia? aká?</td><td>moja, tvoja, naša, vaša, tá, jedna</td><td>pekn<b>á</b>, krásn<b>a</b>, cudz<b>ia</b></td><td>sestr<b>a</b>, knih<b>a</b>, jedáleň<b>-ø</b>, noc<b>-ø</b></td></tr>
+        <tr><th>N</th><td>ktoré? čie? aké?</td><td>moje, tvoje, naše, vaše, to, jedno</td><td>nov<b>é</b>, krásn<b>e</b>, cudz<b>ie</b></td><td>aut<b>o</b>, pol<b>e</b>, námest<b>ie</b>, múze<b>um</b>, dievč<b>a</b></td></tr>
+      </tbody></table></div>
+    <p class="note"><b>jeho, jej, ich</b> не меняются никогда. M živ. — люди и животные, M než. — вещи и понятия.</p>
+  </section>
+
+  <section class="panel gram" id="g-aku">
+    <div class="ghead"><h2>B2. Akuzatív singuláru <span class="q">(koho? čo?)</span></h2><button class="btn ghost sm" data-quiz="dek">Проверить себя</button></div>
+    <div class="tw"><table>
+      <thead><tr><th></th><th>местоимения</th><th>прилагательное</th><th>существительное</th></tr></thead>
+      <tbody>
+        <tr><th>M živ.</th><td>môj<b>ho</b>, to<b>ho</b>, jedn<b>ého</b></td><td>vysok<b>ého</b>, krásn<b>eho</b>, cudz<b>ieho</b></td><td>muž<b>a</b>, futbalist<b>u</b>, sudc<b>u</b></td></tr>
+        <tr><th>M než.</th><td colspan="3">= Nominatív: <span class="sk">ten jeden môj dlhý stôl</span></td></tr>
+        <tr><th>F</th><td>moj<b>u</b>, t<b>ú</b>, jedn<b>u</b></td><td>pekn<b>ú</b>, krásn<b>u</b>, cudz<b>iu</b></td><td>sestr<b>u</b>; jedáleň (= nom.)</td></tr>
+        <tr><th>N</th><td colspan="3">= Nominatív: <span class="sk">to jedno moje nové auto, more, námestie, múzeum, dievča</span></td></tr>
+      </tbody></table></div>
+    <p class="note">Предлоги с Akuzatívom: <b>cez, pre, na, po, v (vo), o</b> — <span class="sk">pre otca, na kávu, po kávu, cez víkend, v sobotu, o hodinu</span>.</p>
+  </section>
+
+  <section class="panel gram" id="g-pron">
+    <div class="ghead"><h2>Личные местоимения в Akuzatíve</h2><button class="btn ghost sm" data-quiz="dek">Проверить себя</button></div>
+    <div class="tw"><table>
+      <thead><tr><th></th><th>без предлога</th><th>с предлогом</th><th></th><th>без предлога</th><th>с предлогом</th></tr></thead>
+      <tbody>
+        <tr><th>ja</th><td>ma</td><td>pre mňa</td><th>my</th><td>nás</td><td>pre nás</td></tr>
+        <tr><th>ty</th><td>ťa</td><td>pre teba</td><th>vy</th><td>vás</td><td>pre vás</td></tr>
+        <tr><th>on, ono</th><td>ho</td><td>pre neho</td><th>oni</th><td>ich</td><td>pre nich</td></tr>
+        <tr><th>ona</th><td>ju</td><td>pre ňu</td><th>ony</th><td>ich</td><td>pre ne</td></tr>
+      </tbody></table></div>
+    <p class="note"><b>oni</b> — люди, где есть мужчина; <b>ony</b> — женщины, вещи, животные.</p>
+  </section>
+
+  <section class="panel gram" id="g-pl">
+    <div class="ghead"><h2>B3. Nominatív plurálu</h2><button class="btn ghost sm" data-quiz="dek">Проверить себя</button></div>
+    <div class="tw"><table>
+      <thead><tr><th></th><th>2, 3, 4</th><th>местоимения</th><th>прилагательное</th><th>существительное</th></tr></thead>
+      <tbody>
+        <tr><th>M živ.</th><td>dvaja, traja, štyria</td><td>moj<b>i</b>, t<b>í</b></td><td>vysok<b>í</b>, krásn<b>i</b></td><td>muž<b>i</b>, dedk<b>ovia</b>, učitel<b>ia</b></td></tr>
+        <tr><th>M než.</th><td>dva, tri, štyri</td><td>moj<b>e</b>, t<b>ie</b></td><td>dlh<b>é</b>, krásn<b>e</b>, písac<b>ie</b></td><td>stol<b>y</b>, stroj<b>e</b>, papier<b>e</b></td></tr>
+        <tr><th>F</th><td>dve, tri, štyri</td><td>moj<b>e</b>, t<b>ie</b></td><td>dlh<b>é</b>, krásn<b>e</b></td><td>sestr<b>y</b>, ulic<b>e</b>, jedáln<b>e</b>, noc<b>i</b></td></tr>
+        <tr><th>N</th><td>dve, tri, štyri</td><td>moj<b>e</b>, t<b>ie</b></td><td>pekn<b>é</b>, cudz<b>ie</b></td><td>aut<b>á</b>, múze<b>á</b>, srdc<b>ia</b>, námest<b>ia</b></td></tr>
+      </tbody></table></div>
+    <p class="note"><b>Чередования:</b> chlapec → chlapci, vojak → vojaci, koberec → koberce. <b>Исключения:</b> človek → ľudia, peniaz → peniaze, deň → dni, dievča → dievčatá, dieťa → deti.</p>
+  </section>
+
+  <section class="panel gram" id="g-pre">
+    <div class="ghead"><h2>C1. Prézent</h2><button class="btn ghost sm" data-quiz="konj">Проверить себя</button></div>
+    <p class="note" style="margin-top:0">Окончания: ja <b>-m</b>, ty <b>-š</b>, on/ona <b>-ø</b>, my <b>-me</b>, vy <b>-te</b>, oni <b>-ú / -ia / -u</b>.</p>
+    <div class="tw"><table>
+      <thead><tr><th>тип</th><th>инфинитив</th><th>ja</th><th>oni</th></tr></thead>
+      <tbody>
+        <tr><th>A</th><td>čítať, čakať, pýtať sa</td><td>čítam, čakám, pýtam sa</td><td>čítajú, čakajú, pýtajú sa</td></tr>
+        <tr><th>I</th><td>hovoriť, spať, sedieť</td><td>hovorím, spím, sedím</td><td>hovoria, spia, sedia</td></tr>
+        <tr><th>E</th><td>písať, piť, žiť</td><td>píšem, pijem, žijem</td><td>píšu, pijú, žijú</td></tr>
+        <tr><th>-núť</th><td>zapnúť</td><td>zapnem</td><td>zapnú</td></tr>
+        <tr><th>-ovať</th><td>študovať</td><td>študujem</td><td>študujú</td></tr>
+      </tbody></table></div>
+    <div class="tw"><table>
+      <thead><tr><th>неправильные</th><th>ja, ty, on</th><th>my, vy, oni</th></tr></thead>
+      <tbody>
+        <tr><th>byť</th><td>som, si, je</td><td>sme, ste, sú</td></tr>
+        <tr><th>jesť</th><td>jem, ješ, je</td><td>jeme, jete, jedia</td></tr>
+        <tr><th>ísť</th><td>idem, ideš, ide</td><td>ideme, idete, idú</td></tr>
+        <tr><th>vedieť</th><td>viem, vieš, vie</td><td>vieme, viete, vedia</td></tr>
+        <tr><th>povedať</th><td>poviem, povieš, povie</td><td>povieme, poviete, povedia</td></tr>
+      </tbody></table></div>
+    <p class="note"><b>sa / si</b> — всегда 2-е место: <span class="sk">Ja sa umývam = Umývam sa.</span> <span class="sk">My si češeme vlasy = Češeme si vlasy.</span></p>
+  </section>
+
+  <section class="panel gram" id="g-fut">
+    <div class="ghead"><h2>C2. Futúrum</h2><button class="btn ghost sm" data-quiz="konj">Проверить себя</button></div>
+    <div class="tw"><table><tbody>
+      <tr><th>ja</th><td>(ne)budem čítať</td><th>my</th><td>(ne)budeme čítať</td></tr>
+      <tr><th>ty</th><td>(ne)budeš čítať</td><th>vy</th><td>(ne)budete čítať</td></tr>
+      <tr><th>on, ona, ono</th><td>(ne)bude čítať</td><th>oni, ony</th><td>(ne)budú čítať</td></tr>
+    </tbody></table></div>
+    <p class="note">С возвратными: <span class="sk">Budem sa umývať.</span> = <span class="sk">Zajtra sa budem umývať.</span> sa не может стоять первым. ísť → <b>pôjdem, pôjdeš, pôjde…</b></p>
+  </section>
+
+  <section class="panel gram" id="g-mod">
+    <div class="ghead"><h2>C3. Модальные глаголы + инфинитив</h2><button class="btn ghost sm" data-quiz="konj">Проверить себя</button></div>
+    <div class="tw"><table>
+      <thead><tr><th></th><th>musieť<br><span class="q">должен</span></th><th>chcieť<br><span class="q">хотеть</span></th><th>môcť<br><span class="q">мочь</span></th><th>smieť<br><span class="q">иметь право</span></th><th>vedieť<br><span class="q">уметь</span></th></tr></thead>
+      <tbody>
+        <tr><th>ja</th><td>musím</td><td>chcem</td><td>môžem</td><td>smiem</td><td>viem</td></tr>
+        <tr><th>ty</th><td>musíš</td><td>chceš</td><td>môžeš</td><td>smieš</td><td>vieš</td></tr>
+        <tr><th>on, ona</th><td>musí</td><td>chce</td><td>môže</td><td>smie</td><td>vie</td></tr>
+        <tr><th>my</th><td>musíme</td><td>chceme</td><td>môžeme</td><td>smieme</td><td>vieme</td></tr>
+        <tr><th>vy</th><td>musíte</td><td>chcete</td><td>môžete</td><td>smiete</td><td>viete</td></tr>
+        <tr><th>oni</th><td>musia</td><td>chcú</td><td>môžu</td><td>smú</td><td>vedia</td></tr>
+      </tbody></table></div>
+  </section>
+
+  <section class="panel gram" id="g-imp">
+    <div class="ghead"><h2>C4. Imperatív</h2><button class="btn ghost sm" data-quiz="konj">Проверить себя</button></div>
+    <p class="note" style="margin-top:0">Форма <b>oni</b> → убрать <b>-ia, -ú, -u</b> → ty <b>-ø</b>, my <b>-me</b>, vy <b>-te</b>: robiť → rob-ia → <b>rob! robme! robte!</b>; písať → píš-u → <b>píš!</b></p>
+    <div class="tw"><table>
+      <thead><tr><th>правило</th><th>примеры</th></tr></thead>
+      <tbody>
+        <tr><th>d, t, n, l → ď, ť, ň, ľ</th><td>platiť → plať! · sedieť → seď! · vstať → vstaň!</td></tr>
+        <tr><th>2 согласные → + i</th><td>spať → spi! · sadnúť si → sadni si! · myslieť → mysli!</td></tr>
+        <tr><th>-ij → -i</th><td>žiť → ži! · piť → pi! · umyť → umy!</td></tr>
+        <tr><th>неправильные</th><td>ísť → poď / choď · byť → buď · povedať → povedz · jesť → jedz · vedieť → vedz</td></tr>
+      </tbody></table></div>
+    <p class="note">Отрицание слитно: <span class="sk">nečítaj, nefajči, nebuď</span>.</p>
+  </section>
+
+  <section class="panel gram" id="g-pret">
+    <div class="ghead"><h2>C5. Préteritum</h2><button class="btn ghost sm" data-quiz="konj">Проверить себя</button></div>
+    <div class="tw"><table><tbody>
+      <tr><th>ja</th><td>som čítal(a) · som sa umýval(a)</td><th>my</th><td>sme čítali · sme sa umývali</td></tr>
+      <tr><th>ty</th><td>si čítal(a) · si sa umýval(a)</td><th>vy</th><td>ste čítali · ste sa umývali</td></tr>
+      <tr><th>on / ona / ono</th><td>čítal / čítala / čítalo — <b>без je</b></td><th>oni</th><td>čítali — <b>без sú</b></td></tr>
+    </tbody></table></div>
+    <div class="tw"><table>
+      <thead><tr><th>группа</th><th>примеры</th></tr></thead>
+      <tbody>
+        <tr><th>-ať, -iť, -ovať</th><td>čítal, pýtal sa, hovoril, spal, písal, pil, študoval</td></tr>
+        <tr><th>-ieť → -el</th><td>sedieť → sedel, myslieť → myslel, chcieť → chcel, vedieť → vedel</td></tr>
+        <tr><th>согласная + -núť → -ol</th><td>sadnúť si → sadol si, zapnúť → zapol (ona: sadla, zapla)</td></tr>
+        <tr><th>гласная + -núť → -nul</th><td>spomenúť → spomenul, minúť → minul</td></tr>
+        <tr><th>неправильные</th><td>byť → bol · jesť → jedol · ísť → išiel, išla · prísť → prišiel · odísť → odišiel · môcť → mohol · obliecť → obliekol · niesť → niesol · viezť → viezol · povedať → povedal</td></tr>
+      </tbody></table></div>
+  </section>
+
+  <section class="panel gram" id="g-tri">
+    <div class="ghead"><h2>D. Фразы на уроке</h2><button class="btn ghost sm" data-quiz="tri">Проверить себя</button></div>
+    <div class="tw"><table class="two">
+      <tbody>
+        <tr><td>Sadni si! / Sadnite si!</td><td>Садись! / Садитесь!</td></tr>
+        <tr><td>Vstaň! / Vstaňte!</td><td>Встань! / Встаньте!</td></tr>
+        <tr><td>Otvorte učebnicu na strane 15!</td><td>Откройте учебник на странице 15!</td></tr>
+        <tr><td>Poďte a píšte na tabuľu!</td><td>Идите и пишите на доске!</td></tr>
+        <tr><td>Počúvajte (pozorne)!</td><td>Слушайте (внимательно)!</td></tr>
+        <tr><td>Opakujte! · Hovorte! · Povedzte!</td><td>Повторите! · Говорите! · Скажите!</td></tr>
+        <tr><td>Odpovedajte na otázku! · Pýtajte sa!</td><td>Ответьте на вопрос! · Спрашивайте!</td></tr>
+        <tr><td>Doplňte! · Podčiarknite! · Označte!</td><td>Дополните! · Подчеркните! · Отметьте!</td></tr>
+        <tr><td>Spojte! · Hľadajte! · Preložte!</td><td>Соедините! · Ищите! · Переведите!</td></tr>
+        <tr><td>Dokončite! · Pridajte! · Nahraďte! · Použite!</td><td>Закончите! · Добавьте! · Замените! · Используйте!</td></tr>
+        <tr><td>Porovnajte! · Kontrolujte! · Opravte! · Zmeňte! · Tvorte! · Hádajte!</td><td>Сравните! · Проверяйте! · Исправьте! · Измените! · Составьте! · Угадайте!</td></tr>
+        <tr><td>Prepáčte, nerozumiem.</td><td>Извините, я не понимаю.</td></tr>
+        <tr><td>Čo znamená…? · Ako sa povie po slovensky…?</td><td>Что значит…? · Как сказать по-словацки…?</td></tr>
+        <tr><td>Hovorte pomaly / nahlas, prosím.</td><td>Говорите медленно / громко, пожалуйста.</td></tr>
+        <tr><td>Prepáčte, že meškám. – Nič sa nestalo.</td><td>Извините, что опаздываю. – Ничего страшного.</td></tr>
+      </tbody></table></div>
+  </section>
+</div>
+
+<div id="vCards" hidden>
+  <section class="panel">
+    <div class="row" style="justify-content:space-between">
+      <h2>Карточки</h2>
+      <span class="small" id="cStat"></span>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:6px">
+      <span class="label">Уроки</span>
+      <div class="chips" id="cLessons"></div>
+    </div>
+    <div class="row" style="gap:16px">
+      <div style="display:flex;flex-direction:column;gap:6px">
+        <span class="label">Сторона</span>
+        <div class="seg" id="cDir"><button data-v="sk" aria-pressed="true">SK → RU</button><button data-v="ru" aria-pressed="false">RU → SK</button></div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:6px">
+        <span class="label">Показывать</span>
+        <div class="seg" id="cFilter"><button data-v="todo" aria-pressed="true">ещё учу</button><button data-v="all" aria-pressed="false">все</button></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="panel cardzone">
+    <div class="bar" aria-hidden="true"><i id="cBar"></i></div>
+    <button class="fcard" id="fcard" aria-live="polite">
+      <span class="fmeta" id="cMeta"></span>
+      <span class="fword" id="cFront"></span>
+      <span class="fback" id="cBack" hidden></span>
+      <span class="ftap" id="cTap">нажмите, чтобы перевернуть</span>
+    </button>
+    <div class="cbtns">
+      <button class="btn ghost" id="cNo">Ещё учу</button>
+      <button class="btn" id="cYes">Знаю ✓</button>
+    </div>
+    <div class="row" style="justify-content:space-between">
+      <button class="linkbtn" id="cPrev">← назад</button>
+      <span class="count" id="cCount"></span>
+      <button class="linkbtn" id="cShuffle">перемешать</button>
+    </div>
+    <div id="cDone" class="fb ok" hidden><b>Все карточки в этом наборе выучены!</b><span>Выберите другие уроки или включите «все», чтобы повторить. <button class="linkbtn" id="cReset">Сбросить отметки по выбранным урокам</button></span></div>
+  </section>
+  <p class="small">Пробел — перевернуть, → «знаю», ← «ещё учу». Отметки «знаю» сохраняются в этом браузере.</p>
+</div>
+
+  <p class="small" id="testHint">Подсказка: на компьютере выбирайте ответ клавишами 1–4, Enter — дальше. Ответ без значков (diakritika) не засчитывается, но тест подскажет, что ошибка только в них.</p>
+</div>
+
+<script>
+const TOPICS={
+  rod:{n:"Род и прилагательные",l:2},
+  zam:{n:"Môj, ten, aký",l:2},
+  cis:{n:"Числа, цены, время",l:3},
+  pre:{n:"Prézent",l:3},
+  mod:{n:"Модальные глаголы и rád",l:3},
+  aku:{n:"Akuzatív",l:4},
+  osz:{n:"Ma, ťa, ho, ju…",l:4},
+  fut:{n:"Futúrum",l:4},
+  imp:{n:"Imperatív",l:4},
+  pret:{n:"Préteritum",l:5},
+  slo:{n:"Порядок слов",l:5},
+  plu:{n:"Множественное число",l:6},
+  slov:{n:"Слова и фразы",l:1},
+  fon:{n:"Фонетика",l:"P"},
+  dek:{n:"Таблицы склонения",l:"P"},
+  konj:{n:"Таблицы спряжения",l:"P"},
+  tri:{n:"Фразы на уроке",l:"P"}
+};
+const LCOL={1:"var(--l1)",2:"var(--l2)",3:"var(--l3)",4:"var(--l4)",5:"var(--l5)",6:"var(--l6)",P:"var(--lp)"};
+const lname=l=>l==="P"?"грамматика из приложения":"урок "+l;
+// m(topic, question, [correct, wrong...], explanation)   i(topic, question, "answer|alt", explanation, hint)
+const Q=[];
+const m=(t,q,o,e)=>Q.push({t,q,o,e,type:"mc"});
+const i=(t,q,a,e,h)=>Q.push({t,q,a:a.split("|"),e,h,type:"in"});
+
+/* ---------- ROD ---------- */
+m("rod","Какой род у слова <em>kniha</em>?",["женский","мужской","средний"],"На -a обычно женский род: kniha, škola, káva.");
+m("rod","Какой род у слова <em>mesto</em>?",["средний","женский","мужской"],"На -o и -e обычно средний: mesto, auto, more.");
+m("rod","Какой род у слова <em>počítač</em>?",["мужской","женский","средний"],"На согласную обычно мужской: počítač, dom, stôl.");
+m("rod","Какой род у слова <em>dievča</em> (девочка)?",["средний","женский","мужской"],"Ловушка: dievča — средний род, как дитя. Поэтому „to dievča“, „jedno dievča“.");
+m("rod","Какой род у слова <em>tenista</em>?",["мужской","женский","средний"],"Мужчины на -a (tenista, futbalista, kolega) — мужской род.");
+m("rod","Какой род у слова <em>miestnosť</em> (комната)?",["женский","мужской","средний"],"Слова на -osť — женский род.");
+m("rod","To je ___ auto.",["nové","nový","nová"],"auto — средний род → прилагательное на -é.");
+m("rod","Anna je ___ študentka.",["dobrá","dobrý","dobré"],"študentka — женский род → -á.");
+m("rod","Moje ___ jedlo je pohánka.",["obľúbené","obľúbený","obľúbená"],"jedlo — средний род → obľúbené.");
+m("rod","Jozef je ___ (высокий).",["vysoký","vysoká","vysoké"],"Мужчина → -ý.");
+m("rod","Противоположность <em>tučná</em>:",["štíhla","múdra","nízka"],"tučná — толстая, štíhla — стройная.");
+m("rod","Противоположность <em>lenivý</em>:",["aktívny","šťastný","rýchly"],"lenivý — ленивый, aktívny — активный.");
+m("rod","Противоположность <em>chorý</em>:",["zdravý","smutný","starý"],"chorý — больной, zdravý — здоровый.");
+
+/* ---------- ZÁMENÁ ---------- */
+m("zam","To je ___ kniha. (моя)",["moja","môj","moje"],"kniha — ж. р. → moja. Знак ô только в môj.");
+m("zam","To je ___ auto. (наше)",["naše","náš","naša"],"auto — ср. р. → naše.");
+m("zam","Čí je ten pes? To je ___ pes. (её)",["jej","jeho","ju"],"«её» (чей?) — jej. jeho — «его». Они не меняются по роду.");
+m("zam","___ dom je veľký. (этот)",["Ten","Tá","To"],"dom — м. р. → ten.");
+m("zam","___ žena je lektorka. (эта)",["Tá","Ten","To"],"žena — ж. р. → tá.");
+m("zam","___ okno je otvorené. (это)",["To","Ten","Tá"],"okno — ср. р. → to.");
+m("zam","___ je jeho obľúbená farba?",["Aká","Aký","Aké"],"farba — ж. р. → aká.");
+m("zam","___ je jej obľúbené jedlo?",["Aké","Aký","Aká"],"jedlo — ср. р. → aké.");
+m("zam","Ktorý ___ šport? Tenis.",["je jej obľúbený","je jej obľúbená","je jeho obľúbené"],"šport — м. р. → obľúbený. jej/jeho не меняются.");
+
+/* ---------- ČÍSLA ---------- */
+i("cis","Напишите словами: <em>24</em>","dvadsaťštyri","20 dvadsať + 4 štyri → пишется слитно.");
+i("cis","Напишите словами: <em>75</em>","sedemdesiatpäť","70 sedemdesiat + 5 päť, слитно.");
+i("cis","Напишите словами: <em>19</em>","devätnásť","11–19 на -násť: jedenásť … devätnásť.");
+i("cis","Напишите словами: <em>40</em>","štyridsať","Десятки: dvadsať, tridsať, štyridsať, päťdesiat…");
+i("cis","Напишите словами: <em>60</em>","šesťdesiat","päťdesiat, šesťdesiat, sedemdesiat, osemdesiat, deväťdesiat.");
+m("cis","3 € =",["tri eurá","tri eur","tri euro"],"1 euro, 2–4 eurá, 5+ eur.");
+m("cis","5 € =",["päť eur","päť eurá","päť euro"],"От 5 и больше — eur.");
+m("cis","20 centov — это…",["двадцать центов","двенадцать центов","двести центов"],"dvadsať = 20, dvanásť = 12.");
+m("cis","Koľko je hodín? <em>10.30</em>",["pol jedenástej","pol desiatej","desať a pol"],"Как в русском «половина одиннадцатого» → pol jedenástej.");
+m("cis","Koľko je hodín? <em>11.15</em>",["štvrť na dvanásť","štvrť na jedenásť","jedenásť štvrť"],"Четверть «на» следующий час: štvrť na dvanásť.");
+m("cis","Koľko je hodín? <em>14.45</em>",["tri štvrte na tri","tri štvrte na dve","štvrť na tri"],"Без четверти три → tri štvrte na tri.");
+m("cis","Vstávam ___ (в 9.00)",["o deviatej","o deväť","v deviatej"],"Время: o + порядковая форма: o deviatej, o siedmej.");
+m("cis","Koľko je hodín? <em>13.30</em>",["pol druhej","pol jednej","pol trinástej"],"13.30 = половина второго → pol druhej.");
+
+/* ---------- PRÉZENT ---------- */
+i("pre","čítať → ja ___","čítam","Тип -ám: čítam, čítaš, číta.");
+i("pre","hovoriť → ja ___","hovorím","Тип -ím: hovorím, hovoríš, hovorí.");
+i("pre","písať → ja ___","píšem","Тип -em: píšem, píšeš, píše.");
+i("pre","študovať → ja ___","študujem","-ovať → -ujem: študujem, pracujem, telefonujem.");
+i("pre","pracovať → my ___","pracujeme","pracujem, pracuješ, pracuje, pracujeme, pracujete, pracujú.");
+i("pre","byť → oni ___","sú","som, si, je, sme, ste, sú.");
+i("pre","jesť → on ___","je","jem, ješ, je, jeme, jete, jedia. «On je» может значить «он ест».");
+i("pre","ísť → ja ___","idem","idem, ideš, ide, ideme, idete, idú.");
+i("pre","piť → ona ___","pije","pijem, piješ, pije…");
+i("pre","variť → oni ___","varia","Тип -ím: в 3-м лице мн. ч. -ia: varia, hovoria.");
+i("pre","rozumieť → ja ___","rozumiem","rozumiem, rozumieš, rozumie, rozumejú.");
+i("pre","spať → ja ___","spím","spím, spíš, spí, spia.");
+i("pre","mať → ty ___","máš","mám, máš, má, máme, máte, majú.");
+m("pre","Peter a Iveta ___ na diskotéke.",["tancujú","tancuje","tancujeme"],"Двое → oni → tancujú.");
+m("pre","Milan ___ do školy. (не идёт)",["nejde","neide","nie ide"],"Исключение: ide → nejde.");
+m("pre","Ona ___ študentka. (не)",["nie je","neje","nieje"],"Отрицание byť — раздельно: nie som, nie je.");
+m("pre","Отрицание «он не говорит»:",["nehovorí","nie hovorí","ne hovorí"],"Все глаголы, кроме byť, — слитно с ne-.");
+m("pre","Ráno sa ___ a raňajkujem. (умываюсь)",["umývam","umývaš","umýva"],"ja → -m.");
+
+/* ---------- MODÁLNE + RÁD ---------- */
+i("mod","musieť → ja ___","musím","musím, musíš, musí…");
+i("mod","môcť → ja ___","môžem","môžem, môžeš, môže… (c → ž).");
+i("mod","vedieť → ja ___","viem","viem, vieš, vie, vieme, viete, vedia.");
+i("mod","chcieť → ja ___","chcem","chcem, chceš, chce, chceme, chcete, chcú.");
+m("mod","<em>Viem plávať.</em> значит…",["Я умею плавать.","Я могу (есть возможность) плавать.","Я хочу плавать."],"vedieť — уметь; môcť — иметь возможность.");
+m("mod","Alina: «___ plávam.» (люблю)",["Rada","Rád","Radi"],"Женщина — rada, мужчина — rád.");
+m("mod","Peter ___ varí.",["rád","rada","rado"],"Peter — мужчина → rád.");
+m("mod","Alina: «Mám ___ kávu.»",["rada","rád","rady"],"mať rada + Akuzatív: Mám rada kávu.");
+m("mod","Tu ___ fajčiť! (вам нельзя)",["nesmiete","nemusíte","nemôžete"],"Запрет: nesmieť. nemusíte — «не обязаны».");
+m("mod","<em>Cez víkend nemusím pracovať.</em>",["На выходных мне не нужно работать.","На выходных мне нельзя работать.","На выходных я не могу работать."],"nemusieť — не обязан.");
+m("mod","После модального глагола идёт…",["инфинитив: musím pracovať","форма на -m: musím pracujem","прошедшее: musím pracoval"],"musím / môžem / chcem + инфинитив на -ť.");
+m("mod","V obchode zákazník hovorí:",["Prosím si dva rožky.","Chcem dva rožky.","Daj dva rožky."],"В магазине вежливо — prosím si, prosíte si.");
+
+/* ---------- AKUZATÍV ---------- */
+i("aku","Pijem ___. (káva)","kávu","Ж. р. -a → -u.");
+i("aku","Mám ___. (sestra)","sestru","Ж. р. -a → -u.");
+i("aku","Vidím ___. (študent)","študenta","М. р. одушевлённый → -a.");
+i("aku","Vidím ___. (dom)","dom","М. р. неодушевлённый не меняется.");
+i("aku","Poznám ___. (tenista)","tenistu","Мужчины на -a → -u: tenistu, futbalistu.");
+i("aku","Čakám na ___. (vnuk)","vnuka","čakať na + Akuzatív; одушевлённый → -a.");
+i("aku","Prosím si ___ Bratislavy. (mapa)","mapu","Ж. р. → -u.");
+m("aku","Čítam ___. (zaujímavá kniha)",["zaujímavú knihu","zaujímavá knihu","zaujímavé knihy"],"Ж. р.: прилагательное -ú, существительное -u.");
+m("aku","Chcem ___. (nové auto)",["nové auto","nového auta","novú auto"],"Средний род в Akuzatív не меняется.");
+m("aku","Mám rada ___. (môj brat)",["môjho brata","môj brat","moju bratu"],"Муж. одушевлённый: môjho, -ého, -a.");
+m("aku","Mám ___. (starý otec)",["starého otca","starý otec","starého otec"],"Одушевлённый: -ého + -a. otec → otca.");
+m("aku","Vidím ___ pána.",["toho","ten","tú"],"Муж. одушевлённый: ten → toho.");
+m("aku","Hľadáme ___ učiteľku.",["tú našu milú","tá naša milá","toho nášho milého"],"Ж. р.: tá → tú, naša → našu, milá → milú.");
+m("aku","Mám ___ dobrú kamarátku.",["jednu","jedna","jedného"],"Ж. р.: jedna → jednu.");
+m("aku","Mám rada ___. (populárna hudba)",["populárnu hudbu","populárnú hudbu","populárna hudbu"],"Ритмическое правило: после долгого á — короткое -u.");
+m("aku","Vidím ___ počítač.",["ten nový","toho nového","tú novú"],"Неодушевлённый м. р. — без изменений.");
+m("aku","Nemám ___. (pes)",["psa","pes","psu"],"pes → psa (одушевлённый).");
+
+/* ---------- OSOBNÉ ZÁMENÁ ---------- */
+m("osz","Poznáš Janu? Áno, poznám ___.",["ju","ňu","jej"],"Без предлога: ju (её).");
+m("osz","Vidíš Petra? Áno, vidím ___.",["ho","neho","jeho"],"Без предлога: ho.");
+m("osz","To je darček pre ___. (я)",["mňa","ma","mi"],"После предлога длинная форма: pre mňa.");
+m("osz","Myslím na ___. (ты)",["teba","ťa","ti"],"После предлога: teba.");
+m("osz","To je pre ___. (она)",["ňu","ju","jej"],"После предлога ju → ňu.");
+m("osz","Kupujem darček pre Ondreja. → Kupujem darček pre ___.",["neho","ho","jeho"],"После предлога ho → neho.");
+m("osz","Čakáš na Romana a Kamilu? Čakáš na ___?",["nich","ne","ich"],"Люди (есть мужчина) после предлога → nich.");
+m("osz","Mám ___ veľmi rád. (вы)",["vás","vy","vami"],"vy → vás.");
+m("osz","Pijem kávu každé ráno. → Pijem ___ každé ráno.",["ju","ho","ich"],"káva — ж. р. → ju (хотя по-русски «его»).");
+m("osz","Vidíš ten obraz? Vidíš ___?",["ho","ju","to"],"obraz — м. р. → ho.");
+
+/* ---------- FUTÚRUM ---------- */
+i("fut","byť → ja (будущее) ___","budem","budem, budeš, bude, budeme, budete, budú.");
+i("fut","Zajtra ___ pracovať. (my)","budeme","budeme + инфинитив.");
+i("fut","ísť → ja (будущее) ___","pôjdem","Не «budem ísť», а pôjdem.");
+i("fut","ísť → oni (будущее) ___","pôjdu","pôjdem, pôjdeš, pôjde, pôjdeme, pôjdete, pôjdu.");
+m("fut","Какая фраза правильная?",["Kúpim si dom.","Budem kúpiť dom.","Budem kúpim dom."],"Совершенный вид (kúpiť) — будущее без budem, как «куплю».");
+m("fut","Zajtra ___ pekné počasie.",["bude","je","budú"],"počasie — оно → bude.");
+m("fut","Čo ___ robiť cez víkend? (vy)",["budete","budeme","bude"],"vy → budete.");
+m("fut","Keď vyhrám milión, ___ cestovať.",["budem","som","bol som"],"Будущее: budem + инфинитив.");
+m("fut","Zajtra ___ do kina. (вы пойдёте)",["pôjdete","budete ísť","idete budete"],"ísť → pôjdete.");
+
+/* ---------- IMPERATÍV ---------- */
+i("imp","čítať → ty! ___","čítaj","čítaj-ú → čítaj!");
+i("imp","študovať → vy! ___","študujte","študuj + te.");
+i("imp","písať → ty! ___","píš","píš-u → píš!");
+i("imp","piť → ty! ___","pi","pij-ú → -ij → -i: pi!");
+i("imp","spať → vy! ___","spite","sp-ia — две согласные → + i: spi, spite.");
+i("imp","byť → ty! ___","buď","Неправильная форма: buď, buďme, buďte.");
+i("imp","jesť → ty! ___","jedz","Неправильная: jedz, jedzte.");
+i("imp","povedať → ty! ___","povedz","Неправильная: povedz.");
+i("imp","platiť → ty! ___","plať","t → ť: plať!");
+i("imp","vypnúť → ty! ___","vypni","vypn-ú — две согласные → vypni.");
+i("imp","čítať → my! (давайте) ___","čítajme","+ me: čítajme!");
+m("imp","Kde si? ___ sem!",["Poď","Choď","Ideš"],"poď — иди сюда, choď — иди туда.");
+m("imp","Deti, ___ domov!",["choďte","poďte","idite"],"К нескольким, «туда» → choďte.");
+m("imp","<em>Nefajči tu!</em> — это…",["príkaz (приказ)","zákaz s nesmieť","otázka"],"Императив с ne- — príkaz. Zákaz: Nesmieš tu fajčiť.");
+m("imp","Вежливо вместо «Otvor okno!»",["Prepáč, môžeš otvoriť okno?","Otvor okno, prepáč!","Musíš otvoriť okno."],"Вежливая просьба: prepáč + môžeš + инфинитив.");
+m("imp","sedieť → ty!",["seď","sedi","sed"],"d → ď: seď!");
+m("imp","Ste unavený? ___ veľa!",["Spite","Spi","Spať"],"vy → spite.");
+
+/* ---------- PRÉTERITUM ---------- */
+i("pret","volať → ona ___","volala","-ť → -l, ж. р. -la.");
+i("pret","chcieť → on ___","chcel","-ie- → -e-: chcel.");
+i("pret","zabudnúť → on ___","zabudol","Согласная + -núť → -ol (он).");
+i("pret","zabudnúť → ona ___","zabudla","Женская форма без o: zabudla.");
+i("pret","spomenúť → on ___","spomenul","Гласная + -núť → -nul.");
+i("pret","jesť → on ___","jedol","jedol, jedla, jedli.");
+i("pret","ísť → on ___","išiel","išiel, išla, išli.");
+i("pret","ísť → ona ___","išla","išla.");
+i("pret","môcť → on ___","mohol","mohol, mohla, mohli.");
+i("pret","niesť → on ___","niesol","niesol, niesla.");
+i("pret","stretnúť → oni ___","stretli","stretol, stretla, stretli.");
+i("pret","vypnúť → on ___","vypol","как zapnúť → zapol.");
+i("pret","rozumieť → my: ___ sme","rozumeli","-ie- → -e-: rozumeli sme.");
+m("pret","byť → ja (женщина)",["bola som","bol som","som bola je"],"bola + som.");
+m("pret","Набоков жил в Америке:",["Nabokov žil v Amerike.","Nabokov je žil v Amerike.","Nabokov bol žil v Amerike."],"3-е лицо — без je/sú.");
+m("pret","Я (женщина) не жила в Братиславе:",["Nebývala som v Bratislave.","Nie som bývala v Bratislave.","Bývala som nie v Bratislave."],"ne- слитно: nebývala som.");
+m("pret","prísť → my",["prišli sme","prišiel sme","prišla sme"],"Мн. ч.: -li + sme.");
+m("pret","Ondrej rozmýšľa. → Ondrej ___.",["rozmýšľal","rozmýšľal je","rozmýšľali"],"Он → -l, без je.");
+m("pret","Deti sa hrajú vonku. →",["Deti sa hrali vonku.","Deti sú sa hrali vonku.","Deti sa hrajali vonku."],"hrať → hrali.");
+m("pret","Študujete slovenčinu? →",["Študovali ste slovenčinu?","Študoval ste slovenčinu?","Ste študujete slovenčinu?"],"vy → -li + ste.");
+m("pret","Наречие для прошедшего времени:",["predvčerom","pozajtra","zajtra"],"predvčerom — позавчера. zajtra — завтра.");
+m("pret","Minulú ___ som bola doma.",["sobotu","sobota","soboty"],"minulú sobotu — Akuzatív.");
+
+/* ---------- SLOVOSLED ---------- */
+m("slo","Какой порядок правильный?",["Včera sme pozerali film.","Sme včera pozerali film.","Včera pozerali film sme."],"som/si/sme/ste — всегда 2-е место.");
+m("slo","Kedy ___ kúpil auto?",["si","som","sa"],"Ты → si на 2-м месте.");
+m("slo","Какой порядок правильный?",["Včera som sa učila.","Včera sa som učila.","Včera učila som sa."],"Сначала som, потом sa.");
+m("slo","«Что ты себе заказал?»",["Čo si si prosil?","Čo si prosil si?","Čo si sa prosil?"],"si (ты) + si (себе).");
+m("slo","Какой порядок правильный?",["Čítala som knihu.","Som čítala knihu.","Čítala knihu som."],"som не может стоять первым.");
+m("slo","Doma ste spali alebo ___ film?",["ste pozerali","pozerali","pozerali ste sa"],"После alebo новая часть: ste снова на 2-м месте.");
+m("slo","Prepáčte, že ___.",["som meškal","meškal som","som sa meškal"],"После že: že + som + глагол.");
+m("slo","Какой порядок правильный?",["Ráno som sa umýval.","Ráno sa som umýval.","Som sa ráno umýval."],"Время на 1-м месте, som sa — на 2-м.");
+m("slo","Deti ___ hrali doma.",["sa","sú sa","sa sú"],"3-е лицо: только sa.");
+
+/* ---------- PLURÁL ---------- */
+i("plu","dom → domy, kniha → ___","knihy","Ж. р. на -a → -y.");
+i("plu","mesto → ___","mestá","Ср. р. -o → -á.");
+i("plu","priateľ → ___","priatelia","Мягкая согласная (люди) → -ia.");
+i("plu","človek → ___","ľudia","Исключение: človek → ľudia.");
+i("plu","dieťa → ___","deti","Исключение: dieťa → deti.");
+i("plu","tabuľa → ___","tabule","Ж. р. после мягкой → -e.");
+i("plu","múzeum → ___","múzeá","-um → -á.");
+i("plu","otec → ___","otcovia","Семейные мужские → -ovia: otcovia, strýkovia.");
+i("plu","herec → ___","herci","Мужчины обычно → -i.");
+i("plu","námestie → ___","námestia","-ie → -ia.");
+m("plu","dobrý študent → dva…",["dvaja dobrí študenti","dva dobré študenty","dve dobrí študenti"],"Мужчины: dvaja, -í, -i.");
+m("plu","2 + počítač:",["dva počítače","dvaja počítače","dve počítače"],"Мужской род-вещи → dva.");
+m("plu","2 + kniha:",["dve knihy","dva knihy","dvaja knihy"],"Ж. и ср. род → dve.");
+m("plu","___ ľudia (эти)",["tí","tie","ten"],"Мужчины/люди → tí.");
+m("plu","___ autá (эти)",["tie","tí","ty"],"Всё, кроме мужчин → tie.");
+m("plu","môj priateľ → ___ priatelia",["moji","moje","môji"],"Мужчины → moji.");
+m("plu","populárny minister → ___",["populárni ministri","populárne ministri","populárny ministre"],"Мужчины: -i (короткое после á).");
+m("plu","veľká továreň → ___",["veľké továrne","veľkí továrne","veľké továreni"],"Не мужчины → -é.");
+m("plu","červené jablko → ___",["červené jablká","červení jablká","červené jablky"],"Ср. р.: -o → -á.");
+m("plu","3 + lekár (врачи-мужчины):",["traja lekári","tri lekáre","tri lekárov"],"Для мужчин: dvaja, traja, štyria + Nominatív plurálu. В учебнике: štyria lekári.");
+
+/* ---------- SLOVÁ A FRÁZY ---------- */
+m("slov","<em>Nech sa páči.</em> говорят, когда…",["что-то протягивают («вот, держите»)","просят о чём-то","извиняются"],"Prosím — просьба; Nech sa páči — когда даёшь.");
+m("slov","<em>Koľko platím?</em>",["Сколько с меня?","Сколько это стоит в кг?","Можно картой?"],"platiť — платить.");
+m("slov","<em>drobné</em>",["сдача, мелочь","чек","корзина"],"pokladničný blok — чек, košík — корзина.");
+m("slov","<em>Nič sa nestalo.</em>",["Ничего страшного.","Ничего не понимаю.","Ничего не надо."],"Ответ на извинение.");
+m("slov","<em>Prepáčte, ale ponáhľam sa.</em>",["Извините, но я спешу.","Извините, я опоздал.","Извините, я не понимаю."],"ponáhľať sa — спешить.");
+m("slov","<em>Prepáčte, že vyrušujem.</em>",["Извините, что беспокою.","Извините, что опаздываю.","Извините, что спрашиваю."],"vyrušovať — мешать, беспокоить.");
+m("slov","Kde sedí Peter? Sedí ___.",["vpredu","dopredu","doprava"],"KDE? → vpredu, vzadu, vľavo. KAM? → dopredu, doľava.");
+m("slov","Musíte ___ odbočiť. (налево, куда?)",["doľava","vľavo","ľavý"],"Куда → doľava.");
+m("slov","<em>Odkiaľ si?</em>",["Откуда ты?","Куда ты?","Где ты?"],"Odkiaľ — откуда, kam — куда, kde — где.");
+m("slov","Alina hovorí: «Som ___.» (замужем)",["vydatá","ženatá","ženatý"],"Женщина — vydatá, мужчина — ženatý.");
+m("slov","<em>sesternica</em>",["двоюродная сестра","племянница","тётя"],"bratranec — двоюродный брат.");
+m("slov","<em>stará mama</em>",["бабушка","старая мама","тётя"],"stará mama = babka, starý otec = dedko.");
+m("slov","<em>strýko</em>",["дядя","дедушка","двоюродный брат"],"teta — тётя.");
+m("slov","Kvetka je ___, pije čaj.",["smädná","hladná","unavená"],"smädný — хочет пить, hladný — голоден.");
+m("slov","«Мне 24 года»:",["Mám dvadsaťštyri rokov.","Som dvadsaťštyri rokov.","Je mi dvadsaťštyri roky."],"В словацком — mať: Mám … rokov.");
+m("slov","«Я говорю по-словацки»:",["Hovorím po slovensky.","Hovorím po slovenský.","Hovorím slovenská."],"po + -y: po slovensky, po rusky, po anglicky.");
+m("slov","«Его зовут Ян»:",["Volá sa Ján.","Volám sa Ján.","Volajú sa Ján."],"ja volám sa, on/ona volá sa.");
+m("slov","<em>piatok</em>",["пятница","пятый","среда"],"pondelok, utorok, streda, štvrtok, piatok, sobota, nedeľa.");
+m("slov","<em>streda</em>",["среда","суббота","вторник"],"utorok — вторник, sobota — суббота.");
+m("slov","<em>letuška</em>",["стюардесса","лётчица","учительница"],"Из текста про Еву: sestra pracuje ako letuška.");
+m("slov","<em>úradník</em>",["служащий, чиновник","продавец","врач"],"lekár — врач, predavač — продавец.");
+m("slov","<em>internát</em>",["общежитие","интернет","школа-интернат"],"Eva býva v internáte.");
+m("slov","Afrika je na ___.",["juhu","severe","západe"],"juh — юг: na juhu.");
+m("slov","Ázia je na ___.",["východe","západe","juhu"],"východ — восток.");
+m("slov","<em>sever</em>",["север","запад","юг"],"sever, juh, východ, západ.");
+m("slov","veľký → naj…",["najväčší","najveľkejší","najveľký"],"veľký → väčší → najväčší.");
+m("slov","vysoký → naj…",["najvyšší","najvysokejší","najvysoký"],"vysoký → vyšší → najvyšší.");
+m("slov","Dobrý učiteľ ___ trpezlivý.",["má byť","musí je","je byť"],"má byť — должен быть.");
+m("slov","<em>Bohužiaľ</em>",["к сожалению","слава богу","конечно"],"Bohužiaľ, pán Novák tu nie je.");
+m("slov","<em>samozrejme</em>",["конечно","самостоятельно","наверное"],"Как в анекдоте про попугая.");
+m("slov","<em>priezvisko</em>",["фамилия","прозвище","имя"],"meno — имя, priezvisko — фамилия.");
+m("slov","<em>zamestnanie</em>",["профессия, работа","занятие спортом","образование"],"vzdelanie — образование.");
+m("slov","<em>Čo si prosíte?</em> (продавец)",["Что желаете?","Что вы просили?","Что вы делаете?"],"Стандартная фраза продавца.");
+
+/* ---------- PRÍLOHA: FONETIKA ---------- */
+m("fon","Какая гласная долгая?",["á","a","ä"],"Долгие: á, é, í, ó, ú, ý (и ĺ, ŕ).");
+m("fon","Что из этого — дифтонг?",["ie","í","é"],"Дифтонги: ia, ie, iu, ô.");
+m("fon","Как читается <em>ô</em> в слове stôl?",["[уо]","долгое [о:]","[ё]"],"ô — дифтонг [уо]: stôl [стуол].");
+m("fon","Какая согласная мягкая?",["ť","t","k"],"Мягкие: ď, ť, ň, ľ, č, š, ž, c, dz, dž, j.");
+m("fon","Как читается <em>deti</em>?",["мягко: [ďeťi]","твёрдо: [дэты]","[дети] с долгим и"],"d, t, n, l перед e, i читаются мягко без значка.");
+m("fon","После каких согласных обычно пишется <em>y</em>?",["d, t, n, l, k, g, h, ch","č, š, ž, c","j, ľ, ť, ď"],"После твёрдых: knihy, chyba, ty.");
+m("fon","<em>chyba</em> – <em>chýba</em>: в чём разница?",["ошибка – не хватает","одно и то же","ошибка – ошибки"],"Долгота меняет смысл слова.");
+m("fon","<em>ä</em> (mäso) читается как…",["«э»","«а»","«я»"],"ä ≈ русское «э».");
+m("fon","Почему <em>krásnu knihu</em>, а не krásnú?",["ритмическое правило: два долгих слога подряд нельзя","это исключение для слова kniha","так пишут только в Akuzatíve мн. ч."],"krá- уже долгий → окончание короткое.");
+m("fon","<em>ch</em> в словацком —",["одна буква и звук «х»","два звука «ц+х»","звук «ч»"],"ch — отдельная буква в алфавите.");
+m("fon","Какое слово написано по ритмическому правилу?",["múdry","múdrý","múdrí (о вещах)"],"mú- долгий → -y короткое.");
+
+/* ---------- PRÍLOHA: DEKLINÁCIA ---------- */
+i("dek","cudzí muž → ___ žena (ж. р.)","cudzia","После мягкой: cudzí, cudzia, cudzie.");
+m("dek","___ auto (чужое)",["cudzie","cudzí","cudzia"],"После мягкой: м. cudzí, ж. cudzia, ср. cudzie.");
+m("dek","Vidím ___ muža. (cudzí)",["cudzieho","cudzého","cudzí"],"Akuzatív M živ. после мягкой: -ieho.");
+m("dek","Vidím ___ ženu. (cudzia)",["cudziu","cudzú","cudzia"],"Akuzatív F после мягкой: -iu.");
+m("dek","Poznám ___ muža. (krásny)",["krásneho","krásného","krásny"],"Ритмическое правило: krásneho (короткое e).");
+i("dek","Akuzatív: Hľadám ___. (sudca)","sudcu","Мужчины на -a → -u: sudcu, futbalistu.");
+m("dek","Vidím ___. (jedáleň)",["jedáleň","jedáleňu","jedálnu"],"Женский на согласную в Akuzatíve не меняется.");
+m("dek","Vidím ___. (dievča)",["dievča","dievčaťa","dievčatu"],"Средний род в Akuzatíve = Nominatív.");
+m("dek","Какой предлог требует Akuzatív (по таблице)?",["pre","s","do"],"С Akuzatívom: cez, pre, na, po, v (vo), o.");
+m("dek","Idem ___ kávu. (за кофе)",["po","pre","na"],"po + Akuz. = за чем-то сходить. В словаре: po (kávu) — за кофе.");
+m("dek","Prídem ___ hodinu. (через час)",["o","v","cez"],"o + Akuz.: o hodinu — через час.");
+m("dek","___ je to sestra? (чья)",["Čia","Čí","Čie"],"čí (M), čia (F), čie (N).");
+m("dek","Čakám na sestry. → Čakám na ___.",["ne","nich","ich"],"ony (женщины, вещи) после предлога → ne.");
+m("dek","Vidíš to dievča? Vidím ___.",["ho","ju","ich"],"ono → ho.");
+i("dek","chlapec → мн. ч. ___","chlapci","Чередование: chlapec → chlapci.");
+i("dek","vojak → мн. ч. ___","vojaci","k → c: vojak → vojaci.");
+i("dek","koberec → мн. ч. ___","koberce","Беглое e: koberec → koberce.");
+i("dek","peniaz → мн. ч. ___","peniaze","Исключение: peniaze.");
+i("dek","deň → мн. ч. ___","dni","Исключение: deň → dni.");
+i("dek","noc → мн. ч. ___","noci","Исключение среди ж. р.: noci.");
+i("dek","dievča → мн. ч. ___","dievčatá","dievča → dievčatá.");
+i("dek","srdce → мн. ч. ___","srdcia","Ср. р. после мягкой: -ia.");
+i("dek","stroj → мн. ч. ___","stroje","M než. после мягкой: -e.");
+i("dek","stôl → мн. ч. ___","stoly","ô → o: stôl → stoly.");
+i("dek","papier → мн. ч. ___","papiere","Неправильное по таблице: papiere.");
+i("dek","ulica → мн. ч. ___","ulice","F после мягкой: -e.");
+i("dek","jedáleň → мн. ч. ___","jedálne","jedáleň → jedálne.");
+i("dek","učiteľ → мн. ч. ___","učitelia","-teľ → -telia.");
+i("dek","dedko → мн. ч. ___","dedkovia","-o у мужчин → -ovia.");
+m("dek","3 + muž:",["traja muži","tri muži","tri muže"],"Мужчины: dvaja, traja, štyria.");
+m("dek","4 + stôl:",["štyri stoly","štyria stoly","štyri stoli"],"Вещи: dva, tri, štyri.");
+m("dek","___ muži (мои)",["moji","moje","môj"],"M živ. pl. → moji.");
+
+/* ---------- PRÍLOHA: KONJUGÁCIA ---------- */
+i("konj","čakať → oni ___","čakajú","A-глаголы: -ajú.");
+i("konj","pýtať sa → oni ___ sa","pýtajú","pýtajú sa.");
+i("konj","sedieť → oni ___","sedia","I-глаголы: -ia.");
+i("konj","spať → oni ___","spia","spím, spia.");
+i("konj","žiť → oni ___","žijú","žijem, žijú.");
+i("konj","písať → oni ___","píšu","píšem, píšu.");
+i("konj","zapnúť → ja ___","zapnem","-núť: zapnem, zapnú.");
+i("konj","zapnúť → oni ___","zapnú","zapnú.");
+i("konj","povedať → ja ___","poviem","Неправильный: poviem, povieš, povie…");
+i("konj","povedať → oni ___","povedia","povieme, poviete, povedia.");
+i("konj","vedieť → oni ___","vedia","viem… vedia.");
+i("konj","jesť → oni ___","jedia","jem… jedia.");
+i("konj","musieť → oni ___","musia","musím… musia.");
+i("konj","chcieť → oni ___","chcú","chcem… chcú.");
+i("konj","môcť → oni ___","môžu","môžem… môžu.");
+i("konj","smieť → ja ___","smiem","smiem, smieš, smie…");
+i("konj","smieť → oni ___","smú","smiem… smú.");
+m("konj","Какой вариант НЕправильный?",["Sa budem zajtra učiť.","Budem sa zajtra učiť.","Zajtra sa budem učiť."],"sa никогда не стоит первым.");
+m("konj","Какой вариант правильный?",["Češeme si vlasy.","Si češeme vlasy.","Češeme vlasy si."],"si — на 2-м месте.");
+i("konj","robiť → ty! ___","rob","rob-ia → rob! robme! robte!");
+i("konj","vstať → vy! ___","vstaňte","vstan-ú → n → ň: vstaň, vstaňte.");
+i("konj","sadnúť si → ty! ___ si","sadni","Две согласные → + i: sadni si!");
+i("konj","žiť → ty! ___","ži","-ij → -i: ži!");
+i("konj","myslieť → ty! ___","mysli","mysl-ia → mysli!");
+i("konj","vedieť → ty! ___","vedz","Неправильный: vedz.");
+i("konj","umyť → ty! ___","umy","umyj-ú → umy!");
+i("konj","sedieť → on (прош.) ___","sedel","-ieť → -el.");
+i("konj","myslieť → on (прош.) ___","myslel","myslel.");
+i("konj","povedať → ona (прош.) ___","povedala","povedal, povedala.");
+i("konj","viezť → on (прош.) ___","viezol","viezol, viezla.");
+i("konj","obliecť → on (прош.) ___","obliekol","obliekol, obliekla.");
+i("konj","odísť → ona (прош.) ___","odišla","odišiel, odišla.");
+i("konj","vedieť → on (прош.) ___","vedel","vedel, vedela.");
+i("konj","sadnúť si → on (прош.) ___ si","sadol","Согласная + -núť → sadol si.");
+m("konj","On ___ umýval. (прош.)",["sa","je sa","sa je"],"3-е лицо: без je — On sa umýval.");
+m("konj","Oni ___ čítali.",["(ничего не нужно): Oni čítali.","sú: Oni sú čítali.","sa: Oni sa čítali."],"В 3-м лице прошедшего нет som/si/je/sú.");
+
+/* ---------- PRÍLOHA: TRIEDA ---------- */
+m("tri","<em>Doplňte!</em>",["Дополните!","Добавьте!","Делайте!"],"doplniť — дополнить, вставить пропуски.");
+m("tri","<em>Podčiarknite!</em>",["Подчеркните!","Подпишите!","Исправьте!"],"podčiarknuť — подчеркнуть.");
+m("tri","<em>Preložte!</em>",["Переведите!","Перепишите!","Положите!"],"preložiť — перевести.");
+m("tri","<em>Spojte!</em>",["Соедините!","Спойте!","Сравните!"],"spojiť — соединить.");
+m("tri","<em>Hádajte!</em>",["Угадайте!","Ищите!","Говорите!"],"hádať — угадывать.");
+m("tri","<em>Označte!</em>",["Отметьте!","Объясните!","Ответьте!"],"označiť — отметить.");
+m("tri","<em>Opravte!</em>",["Исправьте!","Отправьте!","Откройте!"],"opraviť — исправить.");
+m("tri","<em>Porovnajte!</em>",["Сравните!","Повторите!","Расставьте по порядку!"],"porovnať — сравнить.");
+m("tri","<em>Nahraďte!</em>",["Замените!","Наградите!","Найдите!"],"nahradiť — заменить.");
+m("tri","<em>Otvorte učebnicu na strane 15!</em>",["Откройте учебник на странице 15!","Откройте тетрадь на 15 минут!","Закройте учебник на 15-й странице!"],"strana — страница.");
+m("tri","«Как сказать по-словацки…?»",["Ako sa povie po slovensky…?","Čo znamená po slovensky…?","Ako hovoríš slovensky…?"],"Čo znamená…? — что значит.");
+m("tri","«Говорите медленно, пожалуйста.»",["Hovorte pomaly, prosím.","Hovorte rýchlo, prosím.","Hovorte nahlas, prosím."],"pomaly — медленно, rýchlo — быстро, nahlas — громко.");
+m("tri","<em>Teší ma.</em>",["Приятно познакомиться.","Меня это радует? (вопрос)","Утешь меня."],"Говорят при знакомстве.");
+m("tri","<em>Pýtajte sa!</em>",["Спрашивайте!","Попробуйте!","Пытайтесь!"],"pýtať sa — спрашивать.");
+
+const W=[["Ako sa máš?","Как поживаеш? как дела?",1,"fráza",""],["Ako sa máte?","Как поживаете? как дела?",1,"fráza",""],["Kto je to?","Кто это?",1,"fráza",""],["Čo je to?","Что это?",1,"fráza",""],["Kde je to?","Где это?",1,"fráza",""],["Teší ma.","Рад/рада познакомиться.",1,"fráza",""],["Ahoj.","Привет. Пока.",1,"fráza",""],["babka","бабушка",1,"subst","F"],["ceruzka","карандаш",1,"subst","F"],["čašníčka","официантка",1,"subst","F"],["čašník","официант",1,"subst","M"],["Čau.","Привет. Пока.",1,"fráza",""],["Ďakujem.","Спасибо.",1,"fráza",""],["Dobrú chuť.","Приятного аппетита.",1,"fráza",""],["dedko","дедушка",1,"subst","M"],["dieťa","ребенок",1,"subst","N"],["dievča","девочка, девушка",1,"subst","N"],["Dobré ráno.","Доброе утро.",1,"fráza",""],["Dobrú noc.","Спокойной ночи.",1,"fráza",""],["Dobrý deň.","Здравствуйте.",1,"fráza",""],["Dobrý večer.","Добрый вечер.",1,"fráza",""],["doktor","врач",1,"subst","M"],["doktorka","врач (женщина)",1,"subst","F"],["dole","внизу",1,"adv",""],["doma","дома",1,"adv",""],["Dovidenia.","До свидания.",1,"fráza",""],["dvere","дверь",1,"subst","pl"],["geografia","география",1,"subst","F"],["gitaristka","гитаристка",1,"subst","F"],["guma","ластик",1,"subst","F"],["hodiny","часы",1,"subst","pl"],["hokejista","хоккеист",1,"subst","M"],["hokejistka","хоккеистка",1,"subst","F"],["hore","вверху",1,"adv",""],["chlapec","мальчик",1,"subst","M"],["jablko","яблоко",1,"subst","N"],["kalendár","календарь",1,"subst","M"],["kalkulačka","калькулятор",1,"subst","F"],["kancelária","офис",1,"subst","F"],["kde","где",1,"pronom",""],["kniha","книга",1,"subst","F"],["kôš","корзина",1,"subst","M"],["kuchár","повар",1,"subst","M"],["kuchárka","повариха",1,"subst","F"],["kvet","цветок",1,"subst","M"],["lampa","лампа",1,"subst","F"],["lavica","парта",1,"subst","F"],["lektor","лектор",1,"subst","M"],["lektorka","лектор (женщина)",1,"subst","F"],["mapa","карта",1,"subst","F"],["minerálka","минералка",1,"subst","F"],["mobil","мобильник",1,"subst","M"],["muž","мужчина",1,"subst","M"],["my","мы",1,"pronom",""],["Nech sa páči.","Пожалуйста.",1,"fráza",""],["nový","новый",1,"adj",""],["nožnice","ножницы",1,"subst","pl"],["obal","папкаб обертка",1,"subst","M"],["okno","окно",1,"subst","N"],["okuliare","очки",1,"subst","pl"],["on","он",1,"pronom",""],["ona","она",1,"pronom",""],["oni","они",1,"pronom",""],["ono","оно",1,"pronom",""],["pán","господин",1,"subst","M"],["pani","госпожа",1,"subst","F"],["papier","бумага",1,"subst","M"],["pero","ручка",1,"subst","N"],["počítač","компьютер",1,"subst","M"],["policajt","полицейский",1,"subst","M"],["policajtka","полицейский (женщина)",1,"subst","F"],["poštár","почтальон",1,"subst","M"],["poštárka","почтальон (женщина)",1,"subst","F"],["pravítko","линейка",1,"subst","N"],["profesia","профессия",1,"subst","F"],["Prosím.","Пожалуйста.",1,"fráza",""],["slečna","госпожа (незамужная)",1,"subst","F"],["Slovensko","Словакия",1,"subst","N"],["speváčka","певица",1,"subst","F"],["spevák","певец",1,"subst","M"],["stolička","стул",1,"subst","F"],["stôl","стол",1,"subst","M"],["škola","школа",1,"subst","F"],["Španielsko","Испания",1,"subst","N"],["študent","студент",1,"subst","M"],["študentka","студентка",1,"subst","F"],["tabuľa","доска",1,"subst","F"],["tam","там",1,"adv",""],["taška","сумка",1,"subst","F"],["telefón","телефон",1,"subst","M"],["tenista","теннисист",1,"subst","M"],["tenistka","теннисистка",1,"subst","F"],["trieda","класс",1,"subst","F"],["tu","здесь",1,"adv",""],["ty","ты",1,"pronom",""],["uprostred","посередине",1,"adv",""],["úradníčka","служащая",1,"subst","F"],["úradník","служащий",1,"subst","M"],["v (škole)","в (школе)",1,"prep",""],["vľavo","слева",1,"adv",""],["vpravo","справа",1,"adv",""],["vpredu","впереди",1,"adv",""],["vzadu","позади",1,"adv",""],["vy","вы",1,"pronom",""],["zošit","тетрадь",1,"subst","M"],["žena","женщина",1,"subst","F"],["žiačka","ученица",1,"subst","F"],["žiak","ученик",1,"subst","M"],["Koľko je hodín?","Который час?",2,"fráza",""],["Odkiaľ je?","Откуда он?",2,"fráza",""],["aktívny","активный",2,"adj",""],["architekt","архитектор",2,"subst","M"],["auto","машина",2,"subst","N"],["basketbalista","баскетболист",2,"subst","M"],["biely","белый",2,"adj",""],["brat","брат",2,"subst","M"],["cyklistika","велосипедный спорт",2,"subst","F"],["čas","время",2,"subst","M"],["červený","красный",2,"adj",""],["čierny","черный",2,"adj",""],["čistý","чистый",2,"adj",""],["dcéra","дочь",2,"subst","F"],["dnes","сегодня",2,"adv",""],["dobre","хорошо",2,"adv",""],["dobrý","хороший",2,"adj",""],["dom","дом",2,"subst","M"],["džús","сок",2,"subst","M"],["farba","цвет",2,"subst","F"],["fialový","фиолетовый",2,"adj",""],["fotografia","фотография",2,"subst","F"],["futbalista","футболист",2,"subst","M"],["fyzika","физика",2,"subst","F"],["génius","гений",2,"subst","M"],["herec","актер",2,"subst","M"],["hladný","голодный",2,"adj",""],["hlúpy","глупый",2,"adj",""],["hovoriť","говорить",2,"verb",""],["hrubý","толстый",2,"adj",""],["hudba","музыка",2,"subst","F"],["hus","гусь",2,"subst","F"],["hviezda","звезда",2,"subst","M"],["chorý","больной",2,"adj",""],["ideálny","идеальный",2,"adj",""],["ich","их",2,"pronom",""],["inteligentný","интеллигентный",2,"adj",""],["jazyk","язык",2,"subst","M"],["jeden","один",2,"num",""],["jedlo","еда, блюдо",2,"subst","N"],["jedna","одна",2,"num",""],["jedno","одно",2,"num",""],["jeho","его",2,"pronom",""],["jej","ее",2,"pronom",""],["káva","кофе",2,"subst","F"],["kľúč","ключ",2,"subst","M"],["kosť","кость",2,"subst","F"],["ktorý","который",2,"pronom",""],["kurací","куриный",2,"adj",""],["kurča","цыпленок",2,"subst","N"],["laboratórium","лаборатория",2,"subst","N"],["lenivý","ленивый",2,"adj",""],["malý","маленький",2,"adj",""],["mama","мама",2,"subst","F"],["manžel","супруг, муж",2,"subst","M"],["manželka","супруга, жена",2,"subst","F"],["mäso","мясо",2,"subst","N"],["mesto","город",2,"subst","N"],["mladý","молодой",2,"adj",""],["moderný","современный",2,"adj",""],["modrý","голубой, синий",2,"adj",""],["more","море",2,"subst","N"],["môj","мой",2,"pronom",""],["múdry","умный",2,"adj",""],["námestie","площадь",2,"subst","N"],["nápoj","напиток",2,"subst","M"],["náš","наш",2,"pronom",""],["nešťastný","несчастный",2,"adj",""],["nízky","низкий",2,"adj",""],["noc","ночь",2,"subst","F"],["nudný","скучный",2,"adj",""],["obálka","конверт",2,"subst","F"],["obľúbený","любимый",2,"adj",""],["oči","глаза",2,"subst","pl"],["odkiaľ","откуда",2,"adv",""],["oranžový","оранжевый",2,"adj",""],["otec","отец",2,"subst","M"],["pas","паспорт",2,"subst","M"],["pekný","красивый",2,"adj",""],["pes","собака",2,"subst","M"],["pivo","пиво",2,"subst","N"],["plný","полный",2,"adj",""],["po anglicky","по-английски",2,"adv","E"],["po slovensky","по-словацки",2,"adv","S"],["po španielsky","по-испански",2,"adv","S"],["počasie","погода",2,"subst","N"],["pohár","стакан",2,"subst","M"],["pohorie","горный массив",2,"subst","N"],["pomalý","медленный",2,"adj",""],["posteľ","кровать",2,"subst","F"],["prázdny","пустой",2,"adj",""],["priateľ","друг",2,"subst","M"],["priateľka","подруга",2,"subst","F"],["reštaurácia","ресторан",2,"subst","F"],["rodina","семья",2,"subst","F"],["rok","год",2,"subst","M"],["ružový","розовый",2,"adj",""],["ryba","рыба",2,"subst","F"],["rýchly","быстрый",2,"adj",""],["sestra","сестра",2,"subst","F"],["sivý","серый",2,"adj",""],["skener","сканер",2,"subst","M"],["slovník","словарь",2,"subst","M"],["smädný","испытывающий жажду",2,"adj",""],["smutný","грустный",2,"adj",""],["srdce","сердце",2,"subst","N"],["starý","старый",2,"adj",""],["studený","холодный",2,"adj",""],["svetlý","светлый",2,"adj",""],["sympatický","симпатичный",2,"adj",""],["syn","сын",2,"subst","M"],["široký","широкий",2,"adj",""],["škaredý","уродливый",2,"adj",""],["šport","спорт",2,"subst","M"],["športový","спортивный",2,"adj",""],["šťastný","счастливый",2,"adj",""],["štíhly","стройный",2,"adj",""],["tá","эта",2,"pronom",""],["televízia","телевидение",2,"subst","F"],["ten","этот",2,"pronom",""],["tenký","тонкий",2,"adj",""],["teplo","тепло",2,"adv",""],["teplý","теплый",2,"adj",""],["tmavý","темный",2,"adj",""],["to","это",2,"pronom",""],["tučný","толстый",2,"adj",""],["tvoj","твой",2,"pronom",""],["typ","тип",2,"subst","M"],["učiteľ","учитель",2,"subst","M"],["učiteľka","учительница",2,"subst","F"],["usilovný","трудолюбивый",2,"adj",""],["úspešný","успешный",2,"adj",""],["úzky","узкий",2,"adj",""],["vajce","яйцо",2,"subst","N"],["váš","ваш",2,"pronom",""],["včera","вчера",2,"adv",""],["veľký","большой",2,"adj",""],["veľmi","очень",2,"adv",""],["veselý","веселый",2,"adj",""],["víno","вино",2,"subst","N"],["vlasy","волосы",2,"subst","pl"],["vnučka","внучка",2,"subst","F"],["vnuk","внук",2,"subst","M"],["voda","вода",2,"subst","F"],["vysoký","высокий",2,"adj",""],["zajtra","завтра",2,"adv",""],["zaujímavý","интересный",2,"adj",""],["zdravý","здоровый",2,"adj",""],["zelenina","овощи",2,"subst","F"],["zelený","зеленый",2,"adj",""],["zima","холодно",2,"adv",""],["zlý","плохой",2,"adj",""],["žltý","желтый",2,"adj",""],["Čo robíš?","Что делаеш?",3,"fráza",""],["Čo rád robíš?","Чем любишь заниматься?",3,"fráza",""],["Čo musíš robiť?","Что ты должен делать?",3,"fráza",""],["O koľkej?","Во сколько? когда?",3,"fráza",""],["Koľko stojí / stoja?","Сколько стоит/стоят?",3,"fráza",""],["abstinent","непьющий",3,"subst","M"],["banán","банан",3,"subst","M"],["behať","бегать",3,"verb",""],["bicyklovať sa","кататься на велосипеде",3,"verb",""],["bohatý","богатый",3,"adj",""],["brať","брать",3,"verb",""],["bufet","буфет",3,"subst","M"],["bylinkový","травяной",3,"adj",""],["byt","квартира",3,"subst","M"],["byť","быть",3,"verb",""],["bývať","жить",3,"verb",""],["cédečko","компакт-диск",3,"subst","N"],["cent","цент",3,"subst","M"],["centrum","центр",3,"subst","N"],["cestovať","путешествовать, ехать",3,"verb",""],["cibuľa","лук",3,"subst","F"],["cigareta","сигарета",3,"subst","F"],["citrón","лимон",3,"subst","M"],["cvičiť","упражняться",3,"verb",""],["čaj","чай",3,"subst","M"],["čakať","ждать",3,"verb",""],["často","часто",3,"adv",""],["česať sa","причёсываться",3,"verb",""],["čiapka","шапка",3,"subst","F"],["čítať","читать",3,"verb",""],["čokoláda","шоколад",3,"subst","F"],["dať si","заказать, съесть/выпить",3,"verb",""],["dáždnik","зонтик",3,"subst","M"],["detský","детский",3,"adj",""],["dezert","десерт",3,"subst","M"],["divadlo","театр",3,"subst","N"],["dostať","получить",3,"verb",""],["drahý","дорогой",3,"adj",""],["ekologička","эколог (женщина)",3,"subst","F"],["elegantný","элегантный",3,"adj",""],["emotívny","эмоциональный",3,"adj",""],["euro","евро",3,"subst","N"],["fajčiť","курить",3,"verb",""],["fotografovať","фотографировать",3,"verb",""],["historický","исторический",3,"adj",""],["hľadať","искать",3,"verb",""],["horor","фильм ужасов",3,"subst","M"],["hotel","гостинница",3,"subst","M"],["hrad","крепость",3,"subst","M"],["hrať","играть",3,"verb","pl"],["hruška","груша",3,"subst","F"],["chcieť","хотеть",3,"verb",""],["chlieb","хлеб",3,"subst","M"],["ihrisko","детская площадка",3,"subst","N"],["inzerát","объявление",3,"subst","M"],["ísť","идти",3,"verb",""],["jedáleň","столовая",3,"subst","F"],["jesť","есть",3,"verb",""],["jogurt","йогурт",3,"subst","M"],["kabát","пальто",3,"subst","M"],["kamarát","друг",3,"subst","M"],["kaviareň","кафе",3,"subst","F"],["každý","каждый",3,"pronom",""],["kino","кино",3,"subst","N"],["klasika","классика",3,"subst","F"],["komunikovať","общаться",3,"verb",""],["kopírovať","копировать",3,"verb",""],["kostol","костёл",3,"subst","M"],["košík","корзина",3,"subst","M"],["kvalitný","качественный",3,"adj",""],["lietadlo","самолет",3,"subst","N"],["lístok","билет",3,"subst","M"],["lyžiar","лыжник",3,"subst","M"],["lyžovať sa","кататься на лыжах",3,"verb",""],["málokedy","редко",3,"adv",""],["maľovať sa","наносить макияж",3,"verb",""],["masáž","массаж",3,"subst","F"],["meno","имя",3,"subst","N"],["menu","меню",3,"subst","N"],["mlčať","молчать",3,"verb",""],["mlieko","молоко",3,"subst","N"],["môcť","мочь",3,"verb",""],["musieť","быть должным",3,"verb",""],["múzeum","музей",3,"subst","N"],["myslieť","думать",3,"verb",""],["nahlas","вслух",3,"adv",""],["nákup","покупка",3,"subst","M"],["nakupovať","покупать",3,"verb",""],["naozaj","серьезно",3,"part",""],["napoludnie","в полдень",3,"adv",""],["napríklad","например",3,"part",""],["naraz","сразу",3,"adv",""],["navštevovať","посещать",3,"verb",""],["nefajčiarsky","для некурящих",3,"adj",""],["nervózny","нервный",3,"adj",""],["nič","ничего",3,"pronom",""],["niekedy","иногда",3,"adv",""],["nikdy","никогда",3,"pronom",""],["noviny","газета",3,"subst","pl"],["o (druhej)","в (два часа)",3,"prep",""],["občas","иногда",3,"adv",""],["obedovať","обедать",3,"verb",""],["obchod","магазин",3,"subst","M"],["objednať","заказать",3,"verb",""],["obliekať sa","одеваться",3,"verb",""],["obyčajne","обычно",3,"adv",""],["oddychovať","отдыхать",3,"verb",""],["opravovať","ремонтировать",3,"verb",""],["otvoriť","открыть",3,"verb",""],["paradajka","помидор",3,"subst","F"],["pilotovať","пилотировать",3,"verb",""],["písať","писать",3,"verb",""],["piť","пить",3,"verb",""],["plakať","плакать",3,"verb",""],["Platí.","Договорились.",3,"fráza",""],["platiť","платить",3,"verb",""],["plávať","плавать",3,"verb",""],["plavec","пловец",3,"subst","M"],["plavky","купальник",3,"subst","pl"],["plavkyňa","пловчиха",3,"subst","F"],["počúvať","слышать",3,"verb",""],["pokladňa","касса",3,"subst","F"],["pokladníčka","кассирша",3,"subst","F"],["pomáhať","помогать",3,"verb",""],["popoludní","после обеда",3,"adv",""],["povedať","сказать",3,"verb",""],["pozerať","смотреть",3,"verb",""],["pozerať sa","смотреть",3,"verb",""],["pracovať","работать",3,"verb",""],["prať","стирать",3,"verb",""],["pravidelne","регулярно",3,"adv",""],["predavač","продавец",3,"subst","M"],["predavačka","продавщица",3,"subst","F"],["predávať","продавать",3,"verb",""],["prechádzať sa","гулять",3,"verb",""],["prosiť si","хотеть",3,"verb",""],["pýtať sa","спрашивать",3,"verb",""],["racionálny","рациональный",3,"adj",""],["rád (rada, rado)","любить делать что-то",3,"adv",""],["rádio","радио",3,"subst","N"],["raňajkovať","завтракать",3,"verb",""],["raňajky","завтрак",3,"subst","pl"],["ráno","утром",3,"adv",""],["recepčný","администратор",3,"adj",""],["relaxovať","отдыхать",3,"verb",""],["robiť","делать",3,"verb",""],["romantický","романтический",3,"adj",""],["rozprávať sa","разговаривать",3,"verb",""],["rozumieť","понимать",3,"verb",""],["rukavice","перчатки",3,"subst","pl"],["ryža","рис",3,"subst","F"],["sám","сам",3,"pronom",""],["sauna","сауна",3,"subst","F"],["sedieť","сидеть",3,"verb",""],["sladký","сладкий",3,"adj",""],["slnko","солнце",3,"subst","N"],["slobodný","свободный",3,"adj",""],["smiať sa","смеяться",3,"verb",""],["smieť","мочь",3,"verb",""],["sobota","суббота",3,"subst","F"],["spať","спать",3,"verb",""],["spievať","петь",3,"verb",""],["spolu","вместе",3,"adv",""],["správne","правильно",3,"adv",""],["sprchovať sa","принимать душ",3,"verb",""],["stáť","стоять",3,"verb",""],["stretnúť sa","встретиться",3,"verb",""],["šál","шарф",3,"subst","M"],["šalát","салат",3,"subst","M"],["šoférovať","вести машину",3,"verb",""],["športovať","заниматься спортом",3,"verb",""],["študovať","учиться",3,"verb",""],["tancovať","танцевать",3,"verb",""],["telefonovať","звонить по телефону",3,"verb",""],["ticho","тихо",3,"adv",""],["topánky","ботинки",3,"subst","pl"],["tovar","товар",3,"subst","M"],["turistika","туризм",3,"subst","F"],["učiť","преподавать",3,"verb",""],["učiť sa","учиться",3,"verb",""],["umyť","вымыть",3,"verb",""],["umývať sa","мыться",3,"verb",""],["upratovať","убирать",3,"verb",""],["valčík","вальс",3,"subst","M"],["variť","готовить",3,"verb",""],["vec","вещь",3,"subst","F"],["večer","вечером",3,"adv",""],["večerať","ужинать",3,"verb",""],["vedieť","знать, уметь",3,"verb",""],["vegetarián","вегетарианец",3,"subst","M"],["víkend","выходные",3,"subst","M"],["volať sa","звать",3,"verb",""],["von","вон",3,"adv",""],["vozík","тележка",3,"subst","M"],["vreckový","карманный",3,"adj",""],["vstávať","вставать",3,"verb",""],["vždy","всегда",3,"adv",""],["zabudnúť","забыть",3,"verb",""],["zákazníčka","покупательница",3,"subst","F"],["zákazník","покупатель",3,"subst","M"],["zapnúť","включить",3,"verb",""],["zarábať","зарабатывать",3,"verb",""],["zatvoriť","закрыть",3,"verb",""],["Zbohom.","Прощай(те).",3,"fráza",""],["zemiaky","картошка",3,"subst","pl"],["zostať","остаться",3,"verb",""],["zriedka","редко",3,"adv",""],["zvyčajne","обычно",3,"adv",""],["ženatý","женатый",3,"adj",""],["žiť","жить",3,"verb",""],["Prepáčte.","Извините.",4,"fráza",""],["To je v poriadku.","Все в порядке.",4,"fráza",""],["Nič sa nestalo.","Ничего страшного.",4,"fráza",""],["Čo máš rád / rada?","Что тебе нравится?",4,"fráza",""],["Čo nemáš rád / rada?","Что тебе не нравится?",4,"fráza",""],["balík","посылка",4,"subst","M"],["bohužiaľ","к сожалению",4,"part",""],["bratranec","двоюродный брат",4,"subst","M"],["bryndza","брынза",4,"subst","F"],["budova","здание",4,"subst","F"],["budúci","будущий",4,"adj",""],["celý","целый",4,"pronom",""],["cez (okno)","через",4,"prep",""],["cez (víkend)","на выходных",4,"prep",""],["cítiť sa","чувствовать себя",4,"verb",""],["čokoládový","шоколадный",4,"adj",""],["darček","подарок",4,"subst","M"],["dedina","деревня",4,"subst","F"],["dolina","долина",4,"subst","F"],["domov","домой",4,"adv",""],["ekonómka","экономист (женщина)",4,"subst","F"],["folklór","фольклор",4,"subst","M"],["história","история",4,"subst","F"],["chváliť","хвалить",4,"verb",""],["chvíľa","момент",4,"subst","F"],["jaskyňa","пещера",4,"subst","F"],["jazero","озеро",4,"subst","N"],["kamerа","камера",4,"subst","F"],["kemp","кемпинг",4,"subst","M"],["klávesnica","клавиатура",4,"subst","F"],["knižnica","библиотека",4,"subst","F"],["konečne","наконец",4,"part",""],["koza","коза",4,"subst","F"],["krčma","корчма",4,"subst","F"],["kresliť","рисовать",4,"verb",""],["lanovka","канатная дорога",4,"subst","F"],["láska","любовь",4,"subst","F"],["lepidlo","клей",4,"subst","N"],["leto","лето",4,"subst","N"],["lieky","лекарства",4,"subst","pl"],["literatúra","литература",4,"subst","F"],["lopta","мяч",4,"subst","F"],["meškať","опаздывать",4,"verb",""],["mikrofón","микрофон",4,"subst","M"],["modem","модем",4,"subst","M"],["monitor","монитор",4,"subst","M"],["myš","мышь",4,"subst","F"],["na (matematiku)","для (математики)",4,"prep",""],["nedeľa","воскресенье",4,"subst","F"],["neznámy","неизвестный",4,"adj",""],["o (hodinu)","через час",4,"prep",""],["obraz","картина",4,"subst","M"],["ochutnať","попробовать",4,"verb",""],["osloviť + akuz.","обратиться к кому-то",4,"verb",""],["ospravedlniť sa","извиниться",4,"verb",""],["ovca","овца",4,"subst","F"],["ovocie","фрукты",4,"subst","N"],["pacient","больной",4,"subst","M"],["peniaze","деньги",4,"subst","pl"],["piatok","пятница",4,"subst","M"],["po (kávu)","за (кофе)",4,"prep",""],["pohodlný","удобный",4,"adj",""],["polička","полка",4,"subst","F"],["pomaly","медленно",4,"adv",""],["pomarančový","апельсиновый",4,"adj",""],["pondelok","понедельник",4,"subst","M"],["povolenie","разрешение",4,"subst","N"],["pozývať na + akuz","приглашать на что",4,"verb",""],["pre (otca)","для (отца)",4,"prep",""],["prednáška","лекция",4,"subst","F"],["prepáčiť","извинить",4,"verb",""],["rande","свидание",4,"subst","N"],["región","регион",4,"subst","M"],["reproduktory","колонки",4,"subst","pl"],["rybolov","рыбалка",4,"subst","M"],["sadnúť si","сесть",4,"verb",""],["salaš","шалаш",4,"subst","M"],["seminár","семинар",4,"subst","M"],["sesternica","двоюродная сестра",4,"subst","F"],["skenovať","сканировать",4,"verb",""],["skypovať","общаться по",4,"verb",""],["sliepka","курица",4,"subst","F"],["slúchadlá","наушники",4,"subst","pl"],["spisovateľka","писательница",4,"subst","F"],["streda","среда",4,"subst","F"],["strýko","дядя",4,"subst","M"],["susedka","соседка",4,"subst","F"],["šach","шахматы",4,"subst","M"],["šiť","шить",4,"verb",""],["špecialita","местное блюдо",4,"subst","F"],["štvrtok","четверг",4,"subst","M"],["televízor","телевизор",4,"subst","M"],["tešiť sa","радоваться",4,"verb",""],["teta","тетя",4,"subst","F"],["tiež","также",4,"part",""],["tlačiareň","принтер",4,"subst","F"],["tlačiť","печатать",4,"verb",""],["týždeň","неделя",4,"subst","M"],["ujo","дядя",4,"subst","M"],["umelec","художник",4,"subst","M"],["unikát","достопримечательность",4,"subst","M"],["utorok","вторник",4,"subst","M"],["v (sobotu)","в (субботу)",4,"prep",""],["v (telocvični)","в (спортзале)",4,"prep",""],["veštiareň","оракул",4,"subst","F"],["veža","башня",4,"subst","F"],["viezť","везти",4,"verb",""],["vracať sa","возвращаться",4,"verb",""],["vrátiť","вернуть",4,"verb",""],["vyhrať","выиграть",4,"verb",""],["vypnúť","выключить",4,"verb",""],["začať","начать",4,"verb",""],["záhrada","сад, огород",4,"subst","F"],["zastávka","остановка",4,"subst","F"],["zaujímavosť","что вызывает интерес",4,"subst","F"],["žinčica","жинчица (напиток из молока)",4,"subst","F"],["Kde sa nachádza?","Где находится?",5,"fráza",""],["Ako sa dostanem?","Как попасть?",5,"fráza",""],["ak","если",5,"konj",""],["aktovka","портфель",5,"subst","F"],["angličtina","английский язык",5,"subst","F"],["asi","приблизительно",5,"part",""],["aspoň","по крайней мере",5,"part",""],["banka","банк",5,"subst","F"],["bazén","бассеин",5,"subst","M"],["bezdomovec","бездомный человек, БОМЖ",5,"subst","M"],["celkom","вполне",5,"part",""],["cukráreň","кондитерская",5,"subst","F"],["časopis","журнал",5,"subst","M"],["ďakovať","благодарить",5,"verb",""],["doľava","налево",5,"adv",""],["doprava","направо",5,"adv",""],["dopredu","вперед",5,"adv",""],["doprostred","в центр",5,"adv",""],["dozadu","назад",5,"adv",""],["dôležitý","важный",5,"adj",""],["fajn","здорово",5,"adv",""],["fontána","фонтан",5,"subst","F"],["galéria","галерея",5,"subst","F"],["gratulovať","поздравлять",5,"verb",""],["jasné","ясно",5,"part",""],["kam","куда",5,"pronom",""],["koniec","конец",5,"subst","M"],["kontrolovať","проверять",5,"verb",""],["košeľa","рубашка",5,"subst","F"],["kričať","кричать",5,"verb",""],["križovatka","перекресток",5,"subst","F"],["lekár","врач",5,"subst","M"],["letieť","лететь",5,"verb",""],["letisko","аэропорт",5,"subst","N"],["list","письмо",5,"subst","M"],["lotéria","лотерея",5,"subst","F"],["manželia","супруги",5,"subst","pl"],["minulý","прошлый",5,"adj",""],["minúť","истратить",5,"verb",""],["most","мост",5,"subst","M"],["nábytok","мебель",5,"subst","M"],["nahnevať sa","разозлиться",5,"verb",""],["nachádzať sa","находиться",5,"verb",""],["nájsť","найти",5,"verb",""],["nakoniec","наконец",5,"adv",""],["národný","национальный",5,"adj",""],["návšteva","посещение",5,"subst","F"],["nemocnica","больница",5,"subst","F"],["neskoro","поздно",5,"adv",""],["niesť","нести",5,"verb",""],["novinárka","журналистка",5,"subst","F"],["oblečenie","одежда",5,"subst","N"],["obliecť","одеть",5,"verb",""],["obrázok","картинка",5,"subst","M"],["odbočiť","повернуть",5,"verb",""],["odísť","уйти",5,"verb",""],["opakovať","повторять",5,"verb",""],["palác","дворец",5,"subst","M"],["papagáj","попугай",5,"subst","M"],["park","парк",5,"subst","M"],["parkovať","парковать машину",5,"verb",""],["parkovisko","стоянка",5,"subst","N"],["pešo","пешком",5,"adv",""],["pokračovať","продолжать",5,"verb",""],["pokuta","штраф",5,"subst","F"],["poslať","отправить",5,"verb",""],["pošta","почта",5,"subst","F"],["požičať","одолжить",5,"verb",""],["práca","работа",5,"subst","F"],["predať","продать",5,"verb",""],["predstavenie","спектакль",5,"subst","N"],["predvčerom","позавчера",5,"adv",""],["pretože","потому что",5,"konj",""],["priamo","прямо",5,"adv",""],["prísť","прийти",5,"verb",""],["prvý","первый",5,"num",""],["rezeň","котлета",5,"subst","M"],["riad","посуда",5,"subst","M"],["robotník","рабочий",5,"subst","M"],["rovno","прямо",5,"adv",""],["rozmýšľať","думать",5,"verb",""],["samozrejme","конечно",5,"part",""],["semafor","светофор",5,"subst","M"],["sendvič","бутерброд",5,"subst","M"],["slovenčina","словацкий язык",5,"subst","F"],["socha","статуя",5,"subst","F"],["spadnúť","упасть",5,"verb",""],["spokojný","довольный",5,"adj",""],["spolužiak","однокурсник",5,"subst","M"],["spomenúť","вспомнить",5,"verb",""],["stanica","станция",5,"subst","F"],["stretnutie","встреча",5,"subst","N"],["súkromný","частный",5,"adj",""],["supermarket","супермаркет",5,"subst","M"],["syr","сыр",5,"subst","M"],["šek","чек",5,"subst","M"],["šperky","драгоценности",5,"subst","pl"],["špinavý","грязный",5,"adj",""],["štátny","государственный",5,"adj",""],["trh","рынок",5,"subst","M"],["trochu","немного",5,"num",""],["učebnica","учебник",5,"subst","F"],["unavený","уставший",5,"adj",""],["univerzita","университет",5,"subst","F"],["vina","вина",5,"subst","F"],["visieť","висеть",5,"verb",""],["vonku","на улице",5,"adv",""],["všetci","все",5,"pronom",""],["vydať sa","выйти замуж",5,"verb",""],["vyrábať","производить",5,"verb",""],["výročie","годовщина",5,"subst","N"],["záhradník","садовник",5,"subst","M"],["Ako sa volá vaša krajina?","Как называется ваша страна?",6,"fráza",""],["Odkiaľ ste?","Откуда вы?",6,"fráza",""],["Aká je vaša národnosť?","Кто вы по национальности?",6,"fráza",""],["Ako hovoríte?","На каком языке вы говорите?",6,"fráza",""],["Aký je váš rodinný stav?","Вы женаты/замужем?",6,"fráza",""],["aborigén","абориген, местный житель",6,"subst","M"],["adresa","адрес",6,"subst","F"],["atlét","атлет",6,"subst","M"],["baňa","шахта",6,"subst","F"],["bankár","банкир",6,"subst","M"],["Česko","Чехия",6,"subst","N"],["číslo","номер",6,"subst","N"],["človek","человек",6,"subst","M"],["deň","день",6,"subst","M"],["dentista","зубной врач",6,"subst","M"],["diamant","диамант",6,"subst","M"],["dovolenka","отпуск",6,"subst","F"],["dôchodca","пенсионер",6,"subst","M"],["ekonómia","экономия",6,"subst","F"],["farma","ферма",6,"subst","F"],["farmár","фермер",6,"subst","M"],["fazuľa","фасоль",6,"subst","F"],["firma","фирма",6,"subst","F"],["fotoaparát","фотоаппарат",6,"subst","M"],["garáž","гараж",6,"subst","F"],["helikoptéra","вертолет",6,"subst","F"],["hory","горы",6,"subst","pl"],["chutný","вкусный",6,"adj",""],["juh","юг",6,"subst","M"],["juhovýchod","юговосток",6,"subst","M"],["kaktus","кактус",6,"subst","M"],["kameň","камень",6,"subst","M"],["kaňon","каньон",6,"subst","M"],["karneval","карнавал",6,"subst","M"],["kengura","кенгуру",6,"subst","F"],["koberec","ковер",6,"subst","M"],["kolega","коллега",6,"subst","M"],["kolegyňa","коллега (женщина)",6,"subst","F"],["kontinent","континент",6,"subst","M"],["kovboj","ковбой",6,"subst","M"],["kôň","лошадь",6,"subst","M"],["krajina","страна",6,"subst","F"],["kreslo","кресло",6,"subst","N"],["les","лес",6,"subst","M"],["loď","корабль",6,"subst","F"],["Maďarsko","Венгрия",6,"subst","N"],["maliar","художник",6,"subst","M"],["mrakodrap","небоскреб",6,"subst","M"],["muzikant","музыкант",6,"subst","M"],["mydlo","мыло",6,"subst","N"],["nádherný","великолепный",6,"adj",""],["národnosť","национальность",6,"subst","F"],["Nemecko","Германия",6,"subst","N"],["nezamestnaný","безработный",6,"adj",""],["nížina","низменность",6,"subst","F"],["nôž","нож",6,"subst","M"],["obyvateľ","житель",6,"subst","M"],["oceán","океан",6,"subst","M"],["ostrov","остров",6,"subst","M"],["ostrý","острый",6,"adj",""],["palma","пальма",6,"subst","F"],["pieskový","песочный",6,"adj",""],["plavčík","спасатель на воде",6,"subst","M"],["pláž","пляж",6,"subst","F"],["podnikateľ","предприниматель",6,"subst","M"],["pokazený","неисправный",6,"adj",""],["pole","поле",6,"subst","N"],["Poľsko","Польша",6,"subst","N"],["pracovník","сотрудник",6,"subst","M"],["prales","первобытный лес",6,"subst","M"],["priezvisko","фамилия",6,"subst","N"],["pripraviť","подготовить",6,"verb",""],["prístav","порт",6,"subst","M"],["profesor","профессор",6,"subst","M"],["programátor","программист",6,"subst","M"],["púšť","пустыня",6,"subst","F"],["Rakúsko","Австрия",6,"subst","N"],["rieka","река",6,"subst","F"],["robot","робот",6,"subst","M"],["rodič","родитель",6,"subst","M"],["rozhodca","судья (в спорте)",6,"subst","M"],["rozhodkyňa","судья (в спорте; женщина)",6,"subst","F"],["rybačka","рыбалка",6,"subst","F"],["rybár","рыбак",6,"subst","M"],["sever","север",6,"subst","M"],["sopka","вулкан",6,"subst","F"],["sprievodca","проводник",6,"subst","M"],["strom","дерево",6,"subst","M"],["súd","суд",6,"subst","M"],["sudca","судья",6,"subst","M"],["sudkyňa","судья (женщина)",6,"subst","F"],["sukňa","юбка",6,"subst","F"],["surfista","серфер",6,"subst","M"],["sveter","свитер",6,"subst","M"],["synovec","племянник",6,"subst","M"],["šikovný","ловкий",6,"adj",""],["štát","государство",6,"subst","M"],["šťastie","счастье",6,"subst","N"],["Taliansko","Италия",6,"subst","N"],["tanečnica","танцовщица",6,"subst","F"],["tanečník","танцор",6,"subst","M"],["tanier","тарелка",6,"subst","M"],["taxík","такси",6,"subst","M"],["tornádo","торнадо",6,"subst","N"],["továreň","завод",6,"subst","F"],["tričko","майка",6,"subst","N"],["Ukrajina","Украина",6,"subst","F"],["upratovač","уборщик",6,"subst","M"],["veľkomesto","город",6,"subst","N"],["vhodný","подходящий",6,"adj",""],["vlak","поезд",6,"subst","M"],["vodopád","водопад",6,"subst","M"],["voňavý","душистый",6,"adj",""],["východ (opoz. západ)","восток",6,"subst","M"],["vynikajúci","выдающийся",6,"adj",""],["vyštudovať (profesiu)","получить образование",6,"verb",""],["vzdelanie","образование",6,"subst","N"],["zaľúbený","влюбленный",6,"adj",""],["zamestnanie","работа",6,"subst","N"],["západ","запад",6,"subst","M"],["zeleninový","овощной",6,"adj",""],["zlomený","сломанный",6,"adj",""],["žirafa","жираф",6,"subst","F"],["Koľko máte rokov?","Сколько вам лет?",6,"fráza",""],["Aké máte meno a priezvisko?","Как ваше имя и фамилия?",6,"fráza",""],["Ako sa voláš?","Как тебя зовут?",3,"fráza",""],["Kde nájdem…?","Где найти…?",5,"fráza",""]];
+/* ---------- ENGINE ---------- */
+Q.forEach((q,k)=>q.id=k);
+const $=s=>document.querySelector(s);
+const store={get(k,d){try{const v=localStorage.getItem(k);return v?JSON.parse(v):d}catch(e){return d}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
+let selected=new Set(store.get("sk_topics",Object.keys(TOPICS)));
+let len=store.get("sk_len","50");
+let mistakes=new Set(store.get("sk_mist",[]));
+let run=null;
+
+function shuffle(a){a=a.slice();for(let k=a.length-1;k>0;k--){const j=Math.floor(Math.random()*(k+1));[a[k],a[j]]=[a[j],a[k]]}return a}
+const norm=s=>s.toLowerCase().replace(/[.!?,;:„“"]/g,"").replace(/\s+/g," ").trim();
+const strip=s=>norm(s).normalize("NFD").replace(/[̀-ͯ]/g,"");
+const plain=s=>s.replace(/<[^>]+>/g,"");
+
+function renderChips(){
+  const box=$("#topicChips");box.innerHTML="";
+  for(const [k,t] of Object.entries(TOPICS)){
+    const n=Q.filter(q=>q.t===k).length;
+    const b=document.createElement("button");b.className="chip";b.style.setProperty("--c",LCOL[t.l]);
+    b.setAttribute("aria-pressed",selected.has(k));
+    b.innerHTML=`<span class="dot"></span>${t.n}<span class="n">${n}</span>`;
+    b.onclick=()=>{selected.has(k)?selected.delete(k):selected.add(k);store.set("sk_topics",[...selected]);renderChips()};
+    box.appendChild(b);
+  }
+  const pool=Q.filter(q=>selected.has(q.t)).length;
+  $("#poolInfo").textContent=`Всего в банке: ${Q.length} вопросов. В выбранных темах: ${pool}.`;
+  $("#go").disabled=pool===0;
+  $("#mistN").textContent=mistakes.size;$("#goMist").hidden=mistakes.size===0;
+  document.querySelectorAll("#lenSeg button").forEach(b=>b.setAttribute("aria-pressed",b.dataset.v===len));
+}
+$("#allOn").onclick=()=>{selected=new Set(Object.keys(TOPICS));store.set("sk_topics",[...selected]);renderChips()};
+$("#allOff").onclick=()=>{selected=new Set();store.set("sk_topics",[]);renderChips()};
+document.querySelectorAll("#lenSeg button").forEach(b=>b.onclick=()=>{len=b.dataset.v;store.set("sk_len",len);renderChips()});
+
+function start(list){
+  run={list,idx:0,res:[]};
+  show("quiz");renderQ();
+}
+$("#go").onclick=()=>{let pool=shuffle(Q.filter(q=>selected.has(q.t)));if(len!=="all")pool=pool.slice(0,+len);start(pool)};
+$("#goGram").onclick=()=>{let pool=shuffle(Q.filter(q=>TOPICS[q.t].l==="P"||["aku","osz","fut","imp","pret","plu","pre","slo"].includes(q.t)));if(len!=="all")pool=pool.slice(0,+len);start(pool)};
+$("#goMist").onclick=()=>start(shuffle(Q.filter(q=>mistakes.has(q.id))));
+function show(id){["start","quiz","result"].forEach(s=>$("#"+s).hidden=s!==id);window.scrollTo({top:0})}
+
+const KEYS="á ä č ď é í ĺ ľ ň ó ô ŕ š ť ú ý ž".split(" ");
+$("#keys").innerHTML=KEYS.map(k=>`<button class="key" type="button" tabindex="-1">${k}</button>`).join("");
+$("#keys").addEventListener("mousedown",e=>e.preventDefault());
+$("#keys").addEventListener("click",e=>{const b=e.target.closest(".key");if(!b)return;const inp=$("#ans");if(inp.disabled)return;
+  const s=inp.selectionStart??inp.value.length,en=inp.selectionEnd??s;inp.value=inp.value.slice(0,s)+b.textContent+inp.value.slice(en);inp.focus();inp.setSelectionRange(s+1,s+1)});
+
+function renderQ(){
+  const q=run.list[run.idx],t=TOPICS[q.t];
+  $("#barFill").style.width=(run.idx/run.list.length*100)+"%";
+  const tag=$("#qTag");tag.style.setProperty("--c",LCOL[t.l]);tag.lastElementChild.textContent=`${t.n} · ${lname(t.l)}`;
+  $("#qCount").textContent=`${run.idx+1} / ${run.list.length}`;
+  $("#qText").innerHTML=q.q;
+  $("#fb").hidden=true;$("#next").hidden=true;
+  const opts=$("#opts");opts.innerHTML="";
+  if(q.type==="mc"){
+    $("#inBox").hidden=true;$("#qHint").hidden=true;opts.hidden=false;
+    shuffle(q.o.map((txt,k)=>({txt,ok:k===0}))).forEach((o,k)=>{
+      const b=document.createElement("button");b.className="opt";b.innerHTML=`<span class="k">${k+1}</span><span>${o.txt}</span>`;
+      b.dataset.ok=o.ok;b.onclick=()=>answerMC(b,o);opts.appendChild(b);
+    });
+  }else{
+    opts.hidden=true;$("#inBox").hidden=false;
+    $("#qHint").hidden=!q.h;$("#qHint").textContent=q.h||"";
+    const inp=$("#ans");inp.value="";inp.disabled=false;inp.className="";$("#check").disabled=false;
+    setTimeout(()=>inp.focus({preventScroll:true}),30);
+  }
+}
+function answerMC(btn,o){
+  document.querySelectorAll(".opt").forEach(b=>{b.disabled=true;if(b.dataset.ok==="true")b.classList.add("right")});
+  if(!o.ok)btn.classList.add("wrong");
+  record(o.ok,plain(o.txt),o.ok?"ok":"bad");
+}
+function answerIn(){
+  const q=run.list[run.idx],inp=$("#ans"),v=inp.value;
+  if(!v.trim()){inp.focus();return}
+  const ok=q.a.some(a=>norm(a)===norm(v));
+  const near=!ok&&q.a.some(a=>strip(a)===strip(v));
+  inp.disabled=true;$("#check").disabled=true;inp.classList.add(ok?"right":"wrong");
+  record(ok,v.trim(),ok?"ok":near?"warn":"bad");
+}
+$("#check").onclick=answerIn;
+$("#ans").addEventListener("keydown",e=>{if(e.key==="Enter"){e.preventDefault();if(!$("#ans").disabled)answerIn();else next()}});
+
+function record(ok,given,kind){
+  const q=run.list[run.idx];
+  run.res.push({q,ok,given});
+  if(ok)mistakes.delete(q.id);else mistakes.add(q.id);
+  store.set("sk_mist",[...mistakes]);
+  const corr=q.type==="mc"?plain(q.o[0]):q.a[0];
+  const fb=$("#fb");fb.className="fb "+kind;fb.hidden=false;
+  const head=kind==="ok"?"Správne!":kind==="warn"?"Почти: ошибка только в значках.":"Nesprávne.";
+  fb.innerHTML=`<b>${head}</b>${kind!=="ok"?`<span>Правильно: <span class="ans">${corr}</span></span>`:""}<span>${q.e}</span>`;
+  const n=$("#next");n.hidden=false;n.textContent=run.idx===run.list.length-1?"Результат":"Дальше →";
+  if(q.type==="mc")n.focus({preventScroll:true});
+}
+function next(){if(run.idx<run.list.length-1){run.idx++;renderQ()}else finish()}
+$("#next").onclick=next;
+$("#quit").onclick=()=>{if(run.res.length)finish();else{show("start");renderChips()}};
+document.addEventListener("keydown",e=>{
+  if($("#quiz").hidden||e.target.tagName==="INPUT")return;
+  const q=run.list[run.idx];
+  if(q.type==="mc"&&/^[1-4]$/.test(e.key)){const b=document.querySelectorAll(".opt")[+e.key-1];if(b&&!b.disabled)b.click()}
+  else if(e.key==="Enter"&&!$("#next").hidden){e.preventDefault();next()}
+});
+
+function finish(){
+  const r=run.res,ok=r.filter(x=>x.ok).length,pct=Math.round(ok/r.length*100);
+  $("#rScore").textContent=pct+"%";
+  $("#rVerdict").innerHTML=`${ok} из ${r.length} верно<br><span class="small">${pct>=90?"Výborne! К тесту готовы.":pct>=75?"Veľmi dobre. Повторите темы с низким процентом.":pct>=50?"Dobre, но есть что подтянуть.":"Нужно повторить — начните с ошибок."}</span>`;
+  const by={};r.forEach(x=>{(by[x.q.t]??={ok:0,n:0}).n++;if(x.ok)by[x.q.t].ok++});
+  $("#rTopics").innerHTML=Object.entries(by).sort((a,b)=>a[1].ok/a[1].n-b[1].ok/b[1].n).map(([k,v])=>{
+    const p=Math.round(v.ok/v.n*100),t=TOPICS[k];
+    return `<div class="trow" style="--c:${LCOL[t.l]}"><span>${t.n}</span><span class="mini"><i style="width:${p}%"></i></span><span class="pct">${v.ok}/${v.n}</span></div>`}).join("");
+  const wrong=r.filter(x=>!x.ok);
+  $("#retryMist").hidden=!wrong.length;$("#mistTitle").hidden=!wrong.length;
+  $("#rMist").innerHTML=wrong.map(x=>`<li><span class="q">${plain(x.q.q)}</span><span class="yours">Ваш ответ: ${x.given.replace(/</g,"&lt;")}</span><span class="corr">Правильно: ${x.q.type==="mc"?plain(x.q.o[0]):x.q.a[0]}</span><span class="ex">${x.q.e}</span></li>`).join("");
+  $("#barFill").style.width="100%";
+  show("result");
+}
+$("#retryMist").onclick=()=>start(shuffle(run.res.filter(x=>!x.ok).map(x=>x.q)));
+$("#toStart").onclick=()=>{show("start");renderChips()};
+renderChips();
+/* ---------- VIEWS ---------- */
+const VIEWS={test:"vTest",gramatika:"vGram",karticky:"vCards"};
+function route(){
+  let v=(location.hash||"").slice(1);
+  if(v.startsWith("g-")){setView("gramatika");const el=document.getElementById(v);if(el)el.scrollIntoView();return}
+  if(!VIEWS[v])v="test";setView(v);
+}
+function setView(v){
+  for(const [k,id] of Object.entries(VIEWS))$("#"+id).hidden=k!==v;
+  document.querySelectorAll(".tabs a").forEach(a=>a.setAttribute("aria-selected",a.dataset.v===v));
+  if(v==="karticky")renderCard();
+  $("#testHint").hidden=v!=="test";
+}
+document.querySelectorAll(".toc a").forEach(a=>a.addEventListener("click",e=>{e.preventDefault();document.querySelector(a.getAttribute("href")).scrollIntoView({behavior:"smooth"})}));
+window.addEventListener("hashchange",route);
+document.querySelectorAll("[data-quiz]").forEach(b=>b.onclick=()=>{
+  const t=b.dataset.quiz;location.hash="test";setView("test");
+  start(shuffle(Q.filter(q=>q.t===t)).slice(0,20));
+});
+
+/* ---------- CARDS ---------- */
+const POS={subst:"сущ.",verb:"глагол",adj:"прил.",adv:"нареч.",pronom:"местоим.",num:"числ.",prep:"предлог",konj:"союз",part:"частица",fráza:"фраза"};
+const GEN={M:"M",F:"F",N:"N",pl:"pl."};
+let cLess=new Set(store.get("sk_cl",[1,2,3,4,5,6]));
+let cDir=store.get("sk_cd","sk"),cFilt=store.get("sk_cf","todo");
+let known=new Set(store.get("sk_known",[]));
+let deck=[],ci=0,flipped=false;
+const wkey=w=>w[0];
+function buildDeck(){
+  deck=shuffle(W.filter(w=>cLess.has(w[2])&&(cFilt==="all"||!known.has(wkey(w)))));ci=0;
+}
+function renderCardControls(){
+  const box=$("#cLessons");box.innerHTML="";
+  for(let l=1;l<=6;l++){
+    const n=W.filter(w=>w[2]===l).length,k=W.filter(w=>w[2]===l&&known.has(wkey(w))).length;
+    const b=document.createElement("button");b.className="chip";b.style.setProperty("--c",LCOL[l]);
+    b.setAttribute("aria-pressed",cLess.has(l));b.innerHTML=`<span class="dot"></span>Урок ${l}<span class="n">${k}/${n}</span>`;
+    b.onclick=()=>{cLess.has(l)?cLess.delete(l):cLess.add(l);store.set("sk_cl",[...cLess]);buildDeck();renderCard()};
+    box.appendChild(b);
+  }
+  document.querySelectorAll("#cDir button").forEach(b=>b.setAttribute("aria-pressed",b.dataset.v===cDir));
+  document.querySelectorAll("#cFilter button").forEach(b=>b.setAttribute("aria-pressed",b.dataset.v===cFilt));
+  $("#cStat").textContent=`Выучено: ${known.size} из ${W.length}`;
+}
+function renderCard(){
+  renderCardControls();
+  const empty=!deck.length||ci>=deck.length;
+  $("#cDone").hidden=!empty;$("#fcard").hidden=empty;document.querySelector(".cbtns").hidden=empty;
+  $("#cBar").style.width=deck.length?(ci/deck.length*100)+"%":"100%";
+  $("#cCount").textContent=deck.length?`${Math.min(ci+1,deck.length)} / ${deck.length}`:"0";
+  if(empty)return;
+  const w=deck[ci];flipped=false;$("#fcard").classList.remove("flipped");
+  const meta=$("#cMeta");meta.style.setProperty("--c",LCOL[w[2]]);
+  meta.innerHTML=`<span class="dot"></span>Урок ${w[2]} · ${POS[w[3]]||w[3]}${w[4]&&GEN[w[4]]?` <span class="gender">${GEN[w[4]]}</span>`:""}${known.has(wkey(w))?" · ✓":""}`;
+  const [f,b]=cDir==="sk"?[w[0],w[1]]:[w[1],w[0]];
+  $("#cFront").textContent=f;$("#cBack").textContent=b;$("#cBack").hidden=true;$("#cTap").hidden=false;
+}
+function flip(){if(!deck[ci])return;flipped=!flipped;$("#cBack").hidden=!flipped;$("#cTap").hidden=flipped;$("#fcard").classList.toggle("flipped",flipped)}
+function mark(k){const w=deck[ci];if(!w)return;k?known.add(wkey(w)):known.delete(wkey(w));store.set("sk_known",[...known]);ci++;renderCard()}
+$("#fcard").onclick=flip;
+$("#cYes").onclick=()=>mark(true);$("#cNo").onclick=()=>mark(false);
+$("#cPrev").onclick=()=>{if(ci>0){ci--;renderCard()}};
+$("#cShuffle").onclick=()=>{buildDeck();renderCard()};
+$("#cReset").onclick=()=>{W.forEach(w=>{if(cLess.has(w[2]))known.delete(wkey(w))});store.set("sk_known",[...known]);buildDeck();renderCard()};
+document.querySelectorAll("#cDir button").forEach(b=>b.onclick=()=>{cDir=b.dataset.v;store.set("sk_cd",cDir);renderCard()});
+document.querySelectorAll("#cFilter button").forEach(b=>b.onclick=()=>{cFilt=b.dataset.v;store.set("sk_cf",cFilt);buildDeck();renderCard()});
+document.addEventListener("keydown",e=>{
+  if($("#vCards").hidden||e.target.tagName==="INPUT")return;
+  if(e.key===" "){e.preventDefault();flip()}else if(e.key==="ArrowRight")mark(true);else if(e.key==="ArrowLeft")mark(false);
+});
+buildDeck();route();
+</script>
+
+</body>
+</html>
