@@ -183,6 +183,19 @@ h2{font-family:var(--display);font-weight:600;font-size:1.15rem;margin:0}
 .recs{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px}
 .recs li{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--line);flex-wrap:wrap}
 .recs li:last-child{border-bottom:0}
+.trModes .chip{--c:var(--accent)}
+.trModes .chip .dot{display:none}
+.readTxt{margin:0;font-size:1.05rem;line-height:1.7;background:var(--bg);border:1.5px solid var(--line);border-radius:12px;padding:14px 16px}
+.rdList{margin:0;padding-left:22px;display:flex;flex-direction:column;gap:10px}
+.rdList li{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:8px}
+.rdList li .seg button{padding:6px 12px}
+.rdList li.right .rdS{color:var(--ok)}.rdList li.wrong .rdS{color:var(--bad)}
+.rdS{flex:1 1 200px;min-width:0}
+#wTxt{width:100%;font:500 1rem/1.6 var(--body);padding:12px 14px;border-radius:10px;border:1.5px solid var(--line);background:var(--surface);color:var(--fg);resize:vertical}
+.checklist{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,230px),1fr));gap:6px}
+.checklist li{font-size:.92rem}.checklist li.right{color:var(--ok)}.checklist li.wrong{color:var(--muted)}
+.tIn{flex:1 1 220px;min-width:0;font:500 1.1rem var(--body);padding:12px 14px;border-radius:10px;border:1.5px solid var(--line);background:var(--surface);color:var(--fg)}
+.tIn.right{border-color:var(--ok);background:var(--ok-bg)}.tIn.wrong{border-color:var(--bad);background:var(--bad-bg)}.tIn.near{border-color:var(--warn);background:var(--warn-bg)}
 </style>
 <style>[hidden]{display:none!important}img{max-width:100%}</style>
 </head>
@@ -296,6 +309,7 @@ h2{font-family:var(--display);font-weight:600;font-size:1.15rem;margin:0}
     <div id="bFb" class="fb" hidden></div>
     <div class="actions"><button class="btn ghost" id="bReset" data-k="bReset"></button><div class="row"><button class="btn" id="bCheck" data-k="check"></button><button class="btn ghost" id="bNext" data-k="nextTask"></button></div></div>
   </section>
+  <div id="trExtra" style="display:contents"></div>
 </div>
 <div id="vProg" hidden><div id="progBox" style="display:flex;flex-direction:column;gap:22px"></div></div>
 
@@ -1454,8 +1468,184 @@ function bCheck(){
 }
 $("#bCheck").onclick=bCheck;$("#bNext").onclick=bNew;$("#bReset").onclick=()=>{if(!bDone){bAns=[];bRender()}};
 let trMode="conj";
-function setTrMode(m){trMode=m;document.querySelectorAll("#trMode button").forEach(b=>b.setAttribute("aria-pressed",b.dataset.v===m));$("#conjBox").hidden=m!=="conj";$("#buildBox").hidden=m!=="build";if(m==="conj"&&!trCur)newTask();if(m==="build"&&!bCur)bNew()}
+var setTrMode=function(m){trMode=m;document.querySelectorAll("#trMode button").forEach(b=>b.setAttribute("aria-pressed",b.dataset.v===m));$("#conjBox").hidden=m!=="conj";$("#buildBox").hidden=m!=="build";if(m==="conj"&&!trCur)newTask();if(m==="build"&&!bCur)bNew()}
 document.querySelectorAll("#trMode button").forEach(b=>b.onclick=()=>setTrMode(b.dataset.v));
+
+/* ---------- TRAINER: MORE MODES ---------- */
+Object.assign(U,{
+ mProf:["Профессии м / ж","Jobs m / f"],mDecl:["Прилагательное + сущ.","Adjective + noun"],mTense:["Смена времени","Change the tense"],
+ mQa:["Вопрос – ответ","Question – answer"],mOdd:["Лишнее слово","Odd one out"],mRead:["Чтение","Reading"],mWrite:["Текст о себе","About me"],
+ pFem:["Женская форма:","Feminine form:"],pMasc:["Мужская форма:","Masculine form:"],
+ rKa:["-ø → -ka (doktor → doktorka)","-ø → -ka (doktor → doktorka)"],rCka:["-k → -čka (úradník → úradníčka)","-k → -čka (úradník → úradníčka)"],
+ rIsta:["-ista → -istka (tenista → tenistka)","-ista → -istka (tenista → tenistka)"],rCa:["-ca → -kyňa (sudca → sudkyňa)","-ca → -kyňa (sudca → sudkyňa)"],
+ rA:["-a → -yňa (kolega → kolegyňa)","-a → -yňa (kolega → kolegyňa)"],rIrr:["Эту пару нужно запомнить.","This pair has to be memorised."],
+ cNomSg:["Nominatív sg.","Nominatív sg."],cAccSg:["Akuzatív sg. (koho? čo?)","Akuzatív sg. (koho? čo?)"],cNomPl:["Nominatív pl.","Nominatív pl."],
+ dHint:["Напишите прилагательное и существительное в нужной форме.","Write the adjective and the noun in the right form."],
+ gM1:["муж. одуш.","masc. animate"],gM0:["муж. неодуш.","masc. inanimate"],gF:["жен.","fem."],gN:["сред.","neut."],
+ eNom:{M1:["Мужской род: -ý / -y.","Masculine: -ý / -y."],M0:["Мужской род: -ý / -y.","Masculine: -ý / -y."],F:["Женский род: -á / -a (после мягкой -ia).","Feminine: -á / -a (after a soft consonant -ia)."],N:["Средний род: -é / -e (после мягкой -ie).","Neuter: -é / -e (after a soft consonant -ie)."]},
+ eAcc:{M1:["Муж. одуш.: -ého / -eho + -a; мужчины на -a → -u; ten → toho, tento → tohto.","Masc. animate: -ého / -eho + -a; male nouns in -a → -u; ten → toho, tento → tohto."],M0:["Муж. неодуш. в Akuzatíve не меняется.","Masc. inanimate doesn't change in the accusative."],F:["Жен.: -ú / -u + -u; tá → tú, táto → túto, moja → moju.","Fem.: -ú / -u + -u; tá → tú, táto → túto, moja → moju."],N:["Средний род в Akuzatíve не меняется.","Neuter doesn't change in the accusative."]},
+ ePl:{M1:["Мужчины: -í / -i; tí, títo, moji, naši; существительное на -i / -ia / -ovia.","Men: -í / -i; tí, títo, moji, naši; noun in -i / -ia / -ovia."],M0:["Вещи: -é / -e; tie, tieto, moje.","Things: -é / -e; tie, tieto, moje."],F:["Жен.: -é / -e; tie, tieto, moje; -y / -e.","Fem.: -é / -e; tie, tieto, moje; -y / -e."],N:["Сред.: -é / -e; tie, tieto, moje; -á / -ia.","Neut.: -é / -e; tie, tieto, moje; -á / -ia."]},
+ tHint:["Перепишите предложение в нужном времени. Начало уже есть.","Rewrite the sentence in the given tense. The first word is given."],
+ eFut:["Будущее: budem + инфинитив. ísť → pôjdem, byť → budem.","Future: budem + infinitive. ísť → pôjdem, byť → budem."],
+ ePast:["Прошедшее: -l / -la / -li + som, si, sme, ste. В 3-м лице без je / sú.","Past: -l / -la / -li + som, si, sme, ste. No je / sú in the 3rd person."],
+ qaHint:["Выберите подходящий ответ.","Choose the matching answer."],oddHint:["Какое слово не подходит к остальным?","Which word doesn't belong?"],
+ readHint:["Прочитайте текст и отметьте ÁNO (правда) или NIE (неправда).","Read the text and mark ÁNO (true) or NIE (false)."],
+ readScore:["{0} из {1} правильно","{0} of {1} correct"],readNeed:["Отметьте все утверждения.","Mark every statement."],nextText:["Следующий текст →","Next text →"],
+ wHint:["Напишите 5 предложений о себе: как вас зовут, откуда вы, где живёте, что делаете, что любите делать в свободное время.","Write 5 sentences about yourself: your name, where you're from, where you live, what you do, what you like doing in your free time."],
+ wCheck:["Проверить текст","Check my text"],wSample:["Показать пример","Show an example"],
+ wName:["Имя (Volám sa…)","Name (Volám sa…)"],wFrom:["Откуда (Som z…)","Where from (Som z…)"],wLive:["Где живёте (Bývam…)","Where you live (Bývam…)"],
+ wWork:["Работа или учёба (Pracujem / Študujem…)","Work or study (Pracujem / Študujem…)"],wFree:["Свободное время (Rád / rada…)","Free time (Rád / rada…)"],wFive:["5 предложений или больше","5 sentences or more"],
+ wNone:["Частых ошибок не нашлось. Покажите текст преподавателю, чтобы проверить остальное.","No common mistakes found. Show the text to your teacher for a full check."],
+ wErr:["Проверьте:","Check:"],
+ wAge:["Возраст: Mám … rokov (не som).","Age: Mám … rokov (not som)."],wPo:["po slovensky / po anglicky — на -y, не -ý.","po slovensky / po anglicky ends in -y, not -ý."],
+ wRad:["rád / rada пишется с долгим á.","rád / rada is spelled with a long á."],wCap:["Названия стран — с большой буквы: z Ruska, zo Slovenska.","Country names take a capital: z Ruska, zo Slovenska."],
+ wDia:["Нет значков: {0} → {1}","Missing diacritics: {0} → {1}"],wZo:["Перед S/Z пишется zo: zo Slovenska.","Before S/Z use zo: zo Slovenska."],
+ wSampleTxt:["Volám sa Alina a som z Ruska. Teraz bývam v Bratislave s manželom. Pracujem ako programátorka a študujem slovenčinu. Vo voľnom čase rada čítam knihy a pozerám filmy. Najradšej mám knihy od Vladimira Nabokova.","Volám sa Alina a som z Ruska. Teraz bývam v Bratislave s manželom. Pracujem ako programátorka a študujem slovenčinu. Vo voľnom čase rada čítam knihy a pozerám filmy. Najradšej mám knihy od Vladimira Nabokova."]
+});
+const PROF=`doktor|doktorka;lekár|lekárka;učiteľ|učiteľka;kuchár|kuchárka;študent|študentka;šofér|šoférka;predavač|predavačka;úradník|úradníčka;tenista|tenistka;futbalista|futbalistka;hokejista|hokejistka;gitarista|gitaristka;telefonista|telefonistka;kolega|kolegyňa;sudca|sudkyňa;rozhodca|rozhodkyňa;herec|herečka;tanečník|tanečnica;spevák|speváčka;čašník|čašníčka;lektor|lektorka;policajt|policajtka;poštár|poštárka;programátor|programátorka;maliar|maliarka;fotograf|fotografka;riaditeľ|riaditeľka;pilot|pilotka;podnikateľ|podnikateľka;upratovač|upratovačka;inžinier|inžinierka;bankár|bankárka;architekt|architektka;muž|žena;chlapec|dievča;otec|mama|matka;brat|sestra;syn|dcéra;dedko|babka|stará mama;strýko|teta;bratranec|sesternica;vnuk|vnučka;manžel|manželka;kamarát|kamarátka;Slovák|Slovenka;Čech|Češka`.split(";").map(x=>x.split("|"));
+function profRule(m,f){if(f===m+"ka")return "rKa";if(/k$/.test(m)&&f===m.slice(0,-1)+"čka")return "rCka";if(/ista$/.test(m))return "rIsta";if(/ca$/.test(m)&&f===m.slice(0,-2)+"kyňa")return "rCa";if(/a$/.test(m)&&f===m.slice(0,-1)+"yňa")return "rA";return "rIrr"}
+const DET={ten:{nom:{M:"ten",F:"tá",N:"to"},acc:{M1:"toho",M0:"ten",F:"tú",N:"to"},pl:{M1:"tí",X:"tie"}},
+ tento:{nom:{M:"tento",F:"táto",N:"toto"},acc:{M1:"tohto",M0:"tento",F:"túto",N:"toto"},pl:{M1:"títo",X:"tieto"}},
+ "môj":{nom:{M:"môj",F:"moja",N:"moje"},acc:{M1:"môjho",M0:"môj",F:"moju",N:"moje"},pl:{M1:"moji",X:"moje"}},
+ "náš":{nom:{M:"náš",F:"naša",N:"naše"},acc:{M1:"nášho",M0:"náš",F:"našu",N:"naše"},pl:{M1:"naši",X:"naše"}}};
+function adjForm(a,g,c){
+  const G=g[0];
+  if(DET[a]){const d=DET[a];return c==="nom"?d.nom[G]:c==="acc"?d.acc[g==="M1"||g==="M0"?g:G]:d.pl[g==="M1"?"M1":"X"]}
+  const st=a.slice(0,-1),e=a.slice(-1);
+  if(e==="í"){const T={nom:{M:"í",F:"ia",N:"ie"},acc:{M1:"ieho",M0:"í",F:"iu",N:"ie"},pl:{M1:"í",X:"ie"}};return st+(c==="nom"?T.nom[G]:c==="acc"?T.acc[g==="M1"||g==="M0"?g:G]:T.pl[g==="M1"?"M1":"X"])}
+  const L=e==="ý",T=L?{nom:{M:"ý",F:"á",N:"é"},acc:{M1:"ého",M0:"ý",F:"ú",N:"é"},pl:{M1:"í",X:"é"}}:{nom:{M:"y",F:"a",N:"e"},acc:{M1:"eho",M0:"y",F:"u",N:"e"},pl:{M1:"i",X:"e"}};
+  return st+(c==="nom"?T.nom[G]:c==="acc"?T.acc[g==="M1"||g==="M0"?g:G]:T.pl[g==="M1"?"M1":"X"]);
+}
+// noun: nom|gender|acc|pl
+const NOUNS={};`kamarát|M1|kamaráta|kamaráti;študent|M1|študenta|študenti;pán|M1|pána|páni;doktor|M1|doktora|doktori;učiteľ|M1|učiteľa|učitelia;brat|M1|brata|bratia;otec|M1|otca|otcovia;kuchár|M1|kuchára|kuchári;tenista|M1|tenistu|tenisti;herec|M1|herca|herci;chlapec|M1|chlapca|chlapci;muž|M1|muža|muži;lekár|M1|lekára|lekári;sused|M1|suseda|susedia;dom|M0|dom|domy;stôl|M0|stôl|stoly;počítač|M0|počítač|počítače;čaj|M0|čaj|čaje;časopis|M0|časopis|časopisy;telefón|M0|telefón|telefóny;obraz|M0|obraz|obrazy;hrad|M0|hrad|hrady;žena|F|ženu|ženy;kniha|F|knihu|knihy;káva|F|kávu|kávy;stanica|F|stanicu|stanice;voda|F|vodu|vody;izba|F|izbu|izby;ulica|F|ulicu|ulice;učiteľka|F|učiteľku|učiteľky;kamarátka|F|kamarátku|kamarátky;reštaurácia|F|reštauráciu|reštaurácie;sestra|F|sestru|sestry;auto|N|auto|autá;mesto|N|mesto|mestá;mlieko|N|mlieko|mlieka;pivo|N|pivo|pivá;okno|N|okno|okná;jablko|N|jablko|jablká;námestie|N|námestie|námestia;múzeum|N|múzeum|múzeá;dievča|N|dievča|dievčatá`.split(";").forEach(x=>{const [n,g,a,p]=x.split("|");NOUNS[n]={g,acc:a,pl:p}});
+const PAIRS=`dobrý kamarát;nový študent;mladý doktor;starý pán;môj brat;náš učiteľ;tento pán;ten herec;dobrý kuchár;slovenský tenista;múdry chlapec;môj otec;cudzí muž;nový sused;mladý lekár;nový dom;veľký stôl;nový počítač;čierny čaj;zaujímavý časopis;môj telefón;krásny obraz;ten dom;starý hrad;pekný žena;zaujímavý kniha;čierny káva;hlavný stanica;minerálny voda;malý izba;dlhý ulica;náš učiteľka;môj kamarátka;tento reštaurácia;ten kniha;tento žena;mladý sestra;nový auto;veľký mesto;studený mlieko;dobrý pivo;ten okno;červený jablko;starý námestie;moderný múzeum;môj izba;tento mesto;náš dom;malý dievča;lacný káva`.split(";").map(x=>x.split(" "));
+function declAnswer(a,n,c){const N=NOUNS[n],g=N.g;return adjForm(a,g,c)+" "+(c==="nom"?n:c==="acc"?N.acc:N.pl)}
+const TENSE=[
+["Dnes varím obed.","budem variť obed","som varil obed|som varila obed"],
+["Dnes študujeme gramatiku.","budeme študovať gramatiku","sme študovali gramatiku"],
+["Dnes pozerajú film.","budú pozerať film","pozerali film"],
+["Dnes nakupujem v supermarkete.","budem nakupovať v supermarkete","som nakupoval v supermarkete|som nakupovala v supermarkete"],
+["Dnes pán Novák cestuje do Košíc.","pán Novák bude cestovať do Košíc","pán Novák cestoval do Košíc"],
+["Dnes pani Nováková píše list.","pani Nováková bude písať list","pani Nováková písala list"],
+["Dnes pijem kávu.","budem piť kávu","som pil kávu|som pila kávu"],
+["Dnes idem do kina.","pôjdem do kina","som išiel do kina|som išla do kina"],
+["Dnes ste doma.","budete doma","ste boli doma"],
+["Dnes sa učím po slovensky.","sa budem učiť po slovensky","som sa učil po slovensky|som sa učila po slovensky"],
+["Dnes Peter hrá tenis.","Peter bude hrať tenis","Peter hral tenis"],
+["Dnes deti spia dlho.","deti budú spať dlho","deti spali dlho"],
+["Dnes ješ pizzu.","budeš jesť pizzu","si jedol pizzu|si jedla pizzu"],
+["Dnes máme test.","budeme mať test","sme mali test"],
+["Dnes Jana pracuje doma.","Jana bude pracovať doma","Jana pracovala doma"],
+["Dnes sa prechádzame v parku.","sa budeme prechádzať v parku","sme sa prechádzali v parku"],
+["Dnes čítaš noviny.","budeš čítať noviny","si čítal noviny|si čítala noviny"],
+["Dnes idú na výlet.","pôjdu na výlet","išli na výlet"],
+["Dnes som chorá.","budem chorá","som bola chorá"],
+["Dnes mama telefonuje babke.","mama bude telefonovať babke","mama telefonovala babke"],
+["Dnes nepracujem.","nebudem pracovať","som nepracoval|som nepracovala"],
+["Dnes vstávame skoro.","budeme vstávať skoro","sme vstávali skoro"],
+["Dnes počúvate rádio.","budete počúvať rádio","ste počúvali rádio"],
+["Dnes je pekné počasie.","bude pekné počasie","bolo pekné počasie"],
+["Dnes sa Ivan sprchuje ráno.","sa Ivan bude sprchovať ráno","sa Ivan sprchoval ráno"]];
+const QA=[["Ako sa máš?","Mám sa veľmi dobre, ďakujem."],["Odkiaľ ste?","Som z Poľska, z Krakova."],["Koľko to stojí?","Stojí to 12 eur a 50 centov."],["O koľkej vstávaš?","Vstávam o siedmej ráno."],["Kde sa nachádza pošta?","Je v centre mesta, vľavo vedľa banky."],["Čo rád robíš vo voľnom čase?","Rád čítam knihy a športujem."],["Aká je vaša adresa?","Hlavná ulica 15, Bratislava."],["Ako sa voláš?","Volám sa Martin."],["Koľko máš rokov?","Mám dvadsaťtri rokov."],["Aké je tvoje zamestnanie?","Som učiteľka."],["Kde bývaš?","Bývam v Nitre, v malom byte."],["Akými jazykmi hovoríš?","Hovorím po slovensky a po anglicky."],["Aký je váš rodinný stav?","Som ženatý, mám dve deti."],["Koľko je hodín?","Je pol tretej."],["Čo si prosíte?","Prosím si jednu kávu."],["Kedy máš narodeniny?","V máji."],["Aké je dnes počasie?","Je teplo a svieti slnko."],["Čo budeš robiť cez víkend?","Pôjdem s kamarátmi na výlet."],["Čo si robil včera?","Bol som doma a čítal som."],["Máš súrodencov?","Áno, mám staršieho brata."],["Kde je tvoja kniha?","Je na stole."],["Prečo sa učíš po slovensky?","Lebo bývam na Slovensku."]];
+const ODD=[["otec mama brat lekár sestra","lekár","профессия, остальное — семья","a job; the rest is family"],["Slovensko Európa Nemecko Taliansko Francúzsko","Európa","континент, остальное — страны","a continent; the rest are countries"],["pondelok streda január piatok nedeľa","január","месяц, остальное — дни недели","a month; the rest are days"],["jablko voda káva čaj džús","jablko","еда, остальное — напитки","food; the rest are drinks"],["sever juh východ hore západ","hore","«вверху», остальное — стороны света","“up”; the rest are compass points"],["hlava ruka stôl noha oko","stôl","мебель, остальное — части тела","furniture; the rest are body parts"],["ráno obed večer noc zajtra","zajtra","«завтра», остальное — части дня","“tomorrow”; the rest are parts of the day"],["červená modrá zelená veľká čierna","veľká","не цвет","not a colour"],["chlieb syr maslo mlieko lampa","lampa","не еда","not food"],["kuchár čašník doktor reštaurácia učiteľ","reštaurácia","место, остальное — профессии","a place; the rest are jobs"],["čítať písať počúvať kniha hovoriť","kniha","существительное, остальное — глаголы","a noun; the rest are verbs"],["Bratislava Košice Žilina Nitra Slovensko","Slovensko","страна, остальное — города","a country; the rest are cities"],["autobus vlak električka auto stanica","stanica","не транспорт","not a vehicle"],["zima jar leto jeseň sobota","sobota","день недели, остальное — времена года","a day; the rest are seasons"],["veselý šťastný smutný nahnevaný počítač","počítač","не настроение","not a mood"],["dedko babka vnuk sesternica kamarát","kamarát","не родственник","not a relative"],["kabát šál čiapka topánky kôš","kôš","не одежда","not clothing"],["ja ty on my dom","dom","не местоимение","not a pronoun"]];
+const READ=[
+["Ahoj! Volám sa Tomáš a mám dvadsaťpäť rokov. Som Slovák, ale teraz bývam v Prahe, pretože tam študujem medicínu. Moja rodina býva v Žiline. Môj otec je inžinier a mama je učiteľka na základnej škole. Mám aj mladšiu sestru Zuzanu, ktorá ešte chodí na gymnázium. Cez víkend rád chodím do prírody alebo hrám tenis s kamarátmi. Zajtra pôjdem na Slovensko, lebo moja mama má narodeniny.",[["Tomáš býva v Bratislave.",0],["Tomáš študuje medicínu.",1],["Jeho otec pracuje v škole.",0],["Zuzana je staršia ako Tomáš.",0],["Zajtra Tomáš pocestuje na Slovensko.",1]]],
+["Volám sa Eva a mám tridsať rokov. Som vydatá. Môj manžel sa volá Juraj a pracuje ako lekár v nemocnici. Máme dve deti – syna Petra a dcéru Luciu. Peter má osem rokov a chodí do školy, Lucia má tri roky. Bývame v dome v Trnave. Moji rodičia bývajú blízko, preto deti často navštevujú starú mamu a starého otca.",[["Eva je slobodná.",0],["Juraj je lekár.",1],["Eva má tri deti.",0],["Lucia je mladšia ako Peter.",1],["Rodičia Evy bývajú ďaleko.",0]]],
+["Martin je študent. Každý deň vstáva o šiestej. Ráno sa osprchuje, raňajkuje chlieb so syrom a pije čaj. Do školy chodí autobusom. Na obed ide do jedálne. Popoludní sa učí v knižnici a večer hrá futbal alebo pozerá televíziu. Spať ide o jedenástej.",[["Martin vstáva o siedmej.",0],["Na raňajky pije kávu.",0],["Do školy chodí autobusom.",1],["Popoludní sa učí v knižnici.",1],["Spať ide o desiatej.",0]]],
+["Predavačka: Dobrý deň, čo si prosíte? Zákazník: Dobrý deň. Prosím si dva rožky, jeden chlieb a mlieko. Predavačka: Ešte niečo? Zákazník: Áno, ešte jogurt. Koľko platím? Predavačka: Spolu tri eurá dvadsať centov. Zákazník: Nech sa páči, tu je päť eur. Predavačka: Ďakujem, tu sú drobné – jedno euro osemdesiat centov.",[["Zákazník si prosí tri rožky.",0],["Kupuje aj jogurt.",1],["Spolu platí tri eurá dvadsať centov.",1],["Zákazník dáva predavačke desať eur.",0],["Drobné sú jedno euro osemdesiat centov.",1]]],
+["Minulý víkend sme boli s manželom v Bratislave. V sobotu ráno sme išli vlakom. Najprv sme navštívili hrad a potom sme sa prechádzali pri Dunaji. Na obed sme jedli bryndzové halušky v reštaurácii v centre. Večer sme boli v divadle. V nedeľu pršalo, preto sme boli v múzeu a popoludní sme sa vrátili domov.",[["Do Bratislavy išli autom.",0],["Navštívili hrad.",1],["Na obed jedli pizzu.",0],["V nedeľu bolo pekné počasie.",0],["V nedeľu boli v múzeu.",1]]],
+["Zuzana bude mať budúci týždeň dovolenku. V pondelok pôjde k lekárovi a potom bude upratovať byt. V stredu pocestuje k rodičom do Popradu. Tam bude s otcom chodiť na túry do Tatier. V piatok sa vráti domov, lebo v sobotu bude mať narodeniny jej kamarátka.",[["Zuzana bude mať dovolenku.",1],["V pondelok pôjde k lekárovi.",1],["Rodičia bývajú v Prešove.",0],["Na túry bude chodiť s mamou.",0],["V sobotu bude mať narodeniny Zuzana.",0]]],
+["Pán Kováč je kuchár. Pracuje v hoteli v centre mesta. Do práce chodí pešo, lebo býva blízko. Pracuje od desiatej do šiestej. Jeho manželka je predavačka v obchode s oblečením. Pán Kováč doma nevarí, lebo varí celý deň v práci. Doma varí jeho manželka.",[["Pán Kováč pracuje v reštaurácii na stanici.",0],["Do práce chodí pešo.",1],["Začína pracovať o desiatej.",1],["Jeho manželka je učiteľka.",0],["Doma varí pán Kováč.",0]]],
+["Volám sa Ivana a som zo Slovenska. Bývam v Košiciach v malom byte. Pracujem ako úradníčka v banke. Každé ráno chodím do práce električkou. Večer rada varím a počúvam hudbu. V lete chcem cestovať do Talianska, lebo mám rada more a taliansku kuchyňu.",[["Ivana býva v dome.",0],["Pracuje v banke.",1],["Do práce chodí autobusom.",0],["Večer rada varí.",1],["V lete chce ísť do Grécka.",0]]]];
+function tStat(k,ok){const st=trStat[k]||[0,0];st[1]++;if(ok)st[0]++;trStat[k]=st;store.set("sk_tstat",trStat)}
+function keyRow(inp){const d=document.createElement("div");d.className="keys";d.innerHTML=KEYS.map(k=>`<button class="key" type="button" tabindex="-1">${k}</button>`).join("");d.addEventListener("mousedown",e=>e.preventDefault());d.addEventListener("click",e=>{const b=e.target.closest(".key");if(!b||inp.disabled)return;const s=inp.selectionStart??inp.value.length,en=inp.selectionEnd??s;inp.value=inp.value.slice(0,s)+b.textContent+inp.value.slice(en);inp.focus();inp.setSelectionRange(s+1,s+1)});return d}
+// typed task box
+function typedBox(id,gen,key,clean){
+  const sec=document.createElement("section");sec.className="panel";sec.id=id;sec.hidden=true;
+  sec.innerHTML=`<span class="count tStat"></span><div class="trPrompt tPrompt"></div><p class="hint tHintTxt" style="margin:0"></p><div class="inrow"><input type="text" class="tIn" autocomplete="off" autocapitalize="off" spellcheck="false" aria-label="answer"><button class="btn tCheck"></button></div><div class="tKeys"></div><div class="fb tFb" hidden></div><div class="actions" style="justify-content:flex-end"><button class="btn ghost tNext"></button></div>`;
+  const q=c=>sec.querySelector(c),inp=q(".tIn");q(".tKeys").replaceWith(keyRow(inp));
+  let cur=null,r=0,n=0,streak=0;
+  const stat=()=>q(".tStat").textContent=`${u("streak",streak)} · ${u("sess",r,n)}`;
+  function nxt(){cur=gen();q(".tPrompt").innerHTML=cur.prompt;q(".tHintTxt").textContent=cur.hint||"";inp.value="";inp.disabled=false;inp.className="tIn";q(".tFb").hidden=true;q(".tCheck").hidden=false;q(".tCheck").textContent=u("check");q(".tNext").textContent=u("skip");stat();setTimeout(()=>inp.focus({preventScroll:true}),30)}
+  function chk(){let v=inp.value;if(!v.trim()){inp.focus();return}if(clean)v=clean(v);
+    const ok=cur.ans.some(a=>norm(a)===norm(v)),near=!ok&&cur.ans.some(a=>strip(a)===strip(v));
+    inp.disabled=true;inp.className="tIn "+(ok?"right":near?"near":"wrong");n++;if(ok){r++;streak++}else streak=0;tStat(key,ok);
+    const fb=q(".tFb");fb.hidden=false;fb.className="fb tFb "+(ok?"ok":near?"warn":"bad");
+    fb.innerHTML=`<b>${ok?u("ok"):near?u("almost"):u("bad")}</b>${ok?"":`<span>${u("correct")} <span class="ans">${cur.show||cur.ans[0]}</span></span>`}${cur.explain?`<span>${cur.explain()}</span>`:""}`;
+    q(".tCheck").hidden=true;q(".tNext").textContent=u("nextTask");q(".tNext").focus({preventScroll:true});stat()}
+  q(".tCheck").onclick=chk;q(".tNext").onclick=nxt;inp.addEventListener("keydown",e=>{if(e.key==="Enter"){e.preventDefault();inp.disabled?nxt():chk()}});
+  sec.start=()=>{if(!cur)nxt();else{q(".tCheck").textContent=u("check");stat()}};sec.relang=()=>{if(cur){const c=cur;q(".tPrompt").innerHTML=c.promptFn?c.promptFn():c.prompt;q(".tHintTxt").textContent=c.hintFn?c.hintFn():c.hint||"";q(".tNext").textContent=inp.disabled?u("nextTask"):u("skip")}q(".tCheck").textContent=u("check");stat()};
+  return sec;
+}
+function mcBox(id,gen,key){
+  const sec=document.createElement("section");sec.className="panel";sec.id=id;sec.hidden=true;
+  sec.innerHTML=`<span class="count tStat"></span><p class="hint tHintTxt" style="margin:0"></p><p class="question tQ"></p><div class="opts tOpts"></div><div class="fb tFb" hidden></div><div class="actions" style="justify-content:flex-end"><button class="btn ghost tNext"></button></div>`;
+  const q=c=>sec.querySelector(c);let cur=null,r=0,n=0,streak=0;
+  const stat=()=>q(".tStat").textContent=`${u("streak",streak)} · ${u("sess",r,n)}`;
+  function nxt(){cur=gen();q(".tHintTxt").textContent=cur.hintFn();q(".tQ").textContent=cur.q;const o=q(".tOpts");o.innerHTML="";q(".tFb").hidden=true;q(".tNext").textContent=u("skip");
+    cur.opts.forEach((t,k)=>{const b=document.createElement("button");b.className="opt";b.innerHTML=`<span class="k">${k+1}</span><span></span>`;b.lastChild.textContent=t;b.onclick=()=>pick(b,t);o.appendChild(b)});stat()}
+  function pick(b,t){const ok=t===cur.a;sec.querySelectorAll(".opt").forEach(x=>{x.disabled=true;if(x.lastChild.textContent===cur.a)x.classList.add("right")});if(!ok)b.classList.add("wrong");
+    n++;if(ok){r++;streak++}else streak=0;tStat(key,ok);const fb=q(".tFb");fb.hidden=false;fb.className="fb tFb "+(ok?"ok":"bad");fb.innerHTML=`<b>${ok?u("ok"):u("bad")}</b>${cur.explain?`<span>${cur.explain()}</span>`:""}`;q(".tNext").textContent=u("nextTask");q(".tNext").focus({preventScroll:true});stat()}
+  q(".tNext").onclick=nxt;sec.addEventListener("keydown",e=>{if(/^[1-5]$/.test(e.key)){const b=sec.querySelectorAll(".opt")[+e.key-1];if(b&&!b.disabled)b.click()}});
+  sec.start=()=>{if(!cur)nxt();else stat()};sec.relang=()=>{if(cur){q(".tHintTxt").textContent=cur.hintFn()}stat()};return sec;
+}
+const L2=(ru,en)=>LANG==="en"?en:ru;
+const profBox=typedBox("profBox",()=>{const p=rnd(PROF),toF=Math.random()<0.65,m=p[0],fs=p.slice(1);
+  const pf=()=>`<span class="small">${toF?u("pFem"):u("pMasc")}</span><span class="trVerb">${toF?m:fs[0]}</span>`;
+  return {prompt:pf(),promptFn:pf,ans:toF?fs:[m],explain:()=>u(profRule(m,fs[0]))}},"prof");
+const declBox=typedBox("declBox",()=>{const [a,n]=rnd(PAIRS),c=rnd(["nom","acc","acc","pl"]),N=NOUNS[n],g=N.g;
+  const shown=c==="nom"?`(${a}) ${n}`:`(${adjForm(a,g,"nom")} ${n})`;
+  const pf=()=>`<span class="trVerb">${shown}</span><span class="trBadges"><span class="badge">${u({nom:"cNomSg",acc:"cAccSg",pl:"cNomPl"}[c])}</span><span class="badge">${u({M1:"gM1",M0:"gM0",F:"gF",N:"gN"}[g])}</span></span>`;
+  return {prompt:pf(),promptFn:pf,hint:u("dHint"),hintFn:()=>u("dHint"),ans:[declAnswer(a,n,c)],explain:()=>{const T=U[{nom:"eNom",acc:"eAcc",pl:"ePl"}[c]][g];return T[LANG==="en"?1:0]}}},"decl");
+const tenseBox=typedBox("tenseBox",()=>{const t=rnd(TENSE),fut=Math.random()<0.5,w=fut?"Zajtra":"Včera";
+  const pf=()=>`<span class="trVerb" style="font-size:1.4rem">${t[0]}</span><span class="trBadges"><span class="badge ${fut?"t-fut":"t-past"}">${fut?"futúrum":"préteritum"}</span></span><span class="small">➔ ${w} …</span>`;
+  return {prompt:pf(),promptFn:pf,hint:u("tHint"),hintFn:()=>u("tHint"),ans:(fut?t[1]:t[2]).split("|"),show:w+" "+(fut?t[1]:t[2]).split("|").join(" / "),explain:()=>fut?u("eFut"):u("ePast")}},"tense",v=>v.replace(/^\s*(zajtra|včera|vcera)\s+/i,""));
+const qaBox=mcBox("qaBox",()=>{const p=rnd(QA),others=shuffle(QA.filter(x=>x!==p)).slice(0,3).map(x=>x[1]);return {q:p[0],a:p[1],opts:shuffle([p[1],...others]),hintFn:()=>u("qaHint")}},"qa");
+const oddBox=mcBox("oddBox",()=>{const o=rnd(ODD);return {q:"…",a:o[1],opts:shuffle(o[0].split(" ")),hintFn:()=>u("oddHint"),explain:()=>`${o[1]}: ${LANG==="en"?o[3]:o[2]}`}},"odd");
+oddBox.querySelector(".tQ").hidden=true;
+// reading
+const readBox=document.createElement("section");readBox.className="panel";readBox.id="readBox";readBox.hidden=true;
+readBox.innerHTML=`<p class="hint" data-k="readHint" style="margin:0"></p><p class="readTxt" id="rdTxt"></p><ol class="rdList" id="rdList"></ol><div id="rdFb" class="fb" hidden></div><div class="actions"><span class="count" id="rdN"></span><div class="row"><button class="btn" id="rdCheck" data-k="check"></button><button class="btn ghost" id="rdNext" data-k="nextText"></button></div></div>`;
+let rdOrder=shuffle(READ.map((_,k)=>k)),rdI=0,rdSel=[],rdDone=false;
+function rdNew(){const k=rdOrder[rdI%READ.length];rdI++;const [txt,st]=READ[k];rdSel=st.map(()=>null);rdDone=false;$("#rdTxt").textContent=txt;$("#rdFb").hidden=true;$("#rdCheck").hidden=false;$("#rdN").textContent=`${((rdI-1)%READ.length)+1} / ${READ.length}`;
+  const ol=$("#rdList");ol.innerHTML="";st.forEach(([s],j)=>{const li=document.createElement("li");li.innerHTML=`<span class="rdS"></span><span class="seg"><button data-v="1" aria-pressed="false">ÁNO</button><button data-v="0" aria-pressed="false">NIE</button></span>`;li.firstChild.textContent=s;
+    li.querySelectorAll("button").forEach(b=>b.onclick=()=>{if(rdDone)return;rdSel[j]=+b.dataset.v;li.querySelectorAll("button").forEach(x=>x.setAttribute("aria-pressed",x===b))});ol.appendChild(li)});rdCur=st}
+let rdCur=null;
+function rdCheck(){if(rdSel.some(x=>x===null)){const fb=$("#rdFb");fb.hidden=false;fb.className="fb warn";fb.innerHTML=`<b>${u("readNeed")}</b>`;return}
+  rdDone=true;let ok=0;[...$("#rdList").children].forEach((li,j)=>{const good=rdSel[j]===rdCur[j][1];if(good)ok++;li.className=good?"right":"wrong";if(!good){const m=document.createElement("span");m.className="corr";m.textContent=" → "+(rdCur[j][1]?"ÁNO":"NIE");li.firstChild.after(m)}tStat("read",good)});
+  const fb=$("#rdFb");fb.hidden=false;fb.className="fb "+(ok===rdCur.length?"ok":ok>=3?"warn":"bad");fb.innerHTML=`<b>${u("readScore",ok,rdCur.length)}</b>`;$("#rdCheck").hidden=true}
+// writing
+const writeBox=document.createElement("section");writeBox.className="panel";writeBox.id="writeBox";writeBox.hidden=true;
+writeBox.innerHTML=`<p class="hint" data-k="wHint" style="margin:0"></p><textarea id="wTxt" rows="6" spellcheck="false" aria-label="text"></textarea><div class="tKeys"></div><div class="row"><button class="btn" id="wCheck" data-k="wCheck"></button><button class="btn ghost" id="wSample" data-k="wSample"></button></div><ul class="checklist" id="wList"></ul><div id="wFb" class="fb" hidden></div><p class="readTxt" id="wSampleOut" hidden></p>`;
+const DIA={volam:"volám",byvam:"bývam",studujem:"študujem",studentka:"študentka",programatorka:"programátorka",programator:"programátor",pracuem:"pracujem",citam:"čítam",pozeram:"pozerám",pocuvam:"počúvam",mam:"mám",skola:"škola",slovencinu:"slovenčinu",slovensko:"Slovensko",velmi:"veľmi",volnom:"voľnom",case:"čase",kavu:"kávu",manzelom:"manželom",ucitelka:"učiteľka",lekarka:"lekárka",hudbu:"hudbu",plavam:"plávam",sportujem:"športujem",varim:"varím",rokov:"rokov",knihy:"knihy",casopis:"časopis",teraz:"teraz",byt:"byt",zijem:"žijem",vsetko:"všetko",bratislave:"Bratislave"};
+function wCheck(){const t=$("#wTxt").value,lo=t.toLowerCase();
+  const checks=[["wName",/volám sa|volam sa|moje meno/],["wFrom",/\bsom zo? |pochádzam|pochadzam/],["wLive",/bývam|byvam|žijem|zijem/],["wWork",/pracujem|pracuem|študujem|studujem|chodím do školy|som (študent|student)/],["wFree",/\brád\b|\brada\b|\brad\b|voľnom čase|volnom case|mám rád|mám rada/],["wFive",null]];
+  const nS=t.split(/[.!?]+/).filter(x=>x.trim().split(/\s+/).length>=2).length;
+  $("#wList").innerHTML=checks.map(([k,re])=>{const ok=re?re.test(lo):nS>=5;return `<li class="${ok?"right":"wrong"}">${ok?"✓":"○"} ${u(k)}${k==="wFive"?` (${nS})`:""}</li>`}).join("");
+  const errs=[];
+  if(/\bsom\s+\d+|\bsom\s+[a-záäčďéíĺľňóôŕšťúýž]+\s+rok/i.test(t))errs.push(u("wAge"));
+  if(/po (slovenský|anglický|ruský|nemecký|francúzský|talianský)/i.test(t)||/po (slovenský|anglický|ruský|nemecký)/i.test(t))errs.push(u("wPo"));
+  if(/\brad\b/.test(lo)&&!/\brada\b/.test(lo))errs.push(u("wRad"));
+  if(/\bzo? (ruska|slovenska|ukrajiny|česka|poľska|nemecka|anglicka)/.test(t))errs.push(u("wCap"));
+  if(/\bz (slovensk|srbsk|španiel|zámor)/i.test(t))errs.push(u("wZo"));
+  const seen=new Set();(lo.match(/[a-záäčďéíĺľňóôŕšťúýž]+/g)||[]).forEach(w=>{if(DIA[w]&&DIA[w].toLowerCase()!==w&&!seen.has(w)){seen.add(w);errs.push(u("wDia",w,DIA[w]))}});
+  const fb=$("#wFb");fb.hidden=false;fb.className="fb "+(errs.length?"warn":"ok");fb.innerHTML=errs.length?`<b>${u("wErr")}</b>${errs.map(e=>`<span>• ${e}</span>`).join("")}`:`<b>${u("wNone")}</b>`;
+  try{localStorage.setItem("sk_wtxt",t)}catch(e){}
+}
+setTimeout(()=>{},0);
+const trExtra=$("#trExtra");[profBox,declBox,tenseBox,qaBox,oddBox,readBox,writeBox].forEach(b=>trExtra.appendChild(b));
+writeBox.querySelector(".tKeys").replaceWith(keyRow($("#wTxt")));
+try{const sv=localStorage.getItem("sk_wtxt");if(sv)$("#wTxt").value=sv}catch(e){}
+$("#wCheck").onclick=wCheck;$("#wSample").onclick=()=>{const o=$("#wSampleOut");o.hidden=!o.hidden;o.textContent=u("wSampleTxt")};
+$("#rdCheck").onclick=rdCheck;$("#rdNext").onclick=rdNew;
+const TRMODES=[["conj","mConj","conjBox"],["build","mBuild","buildBox"],["decl","mDecl","declBox"],["tense","mTense","tenseBox"],["prof","mProf","profBox"],["qa","mQa","qaBox"],["odd","mOdd","oddBox"],["read","mRead","readBox"],["write","mWrite","writeBox"]];
+$("#trMode").className="chips trModes";$("#trMode").innerHTML=TRMODES.map(([v,k])=>`<button class="chip" data-v="${v}" data-k="${k}" aria-pressed="false"></button>`).join("");
+setTrMode=function(m){trMode=m;document.querySelectorAll("#trMode button").forEach(b=>b.setAttribute("aria-pressed",b.dataset.v===m));
+  TRMODES.forEach(([v,,id])=>$("#"+id).hidden=v!==m);
+  if(m==="conj"&&!trCur)newTask();if(m==="build"&&!bCur)bNew();
+  const box=$("#"+TRMODES.find(x=>x[0]===m)[2]);if(box.start)box.start();if(m==="read"&&!rdCur)rdNew()};
+document.querySelectorAll("#trMode button").forEach(b=>b.onclick=()=>setTrMode(b.dataset.v));
+function relangTrainer(){[profBox,declBox,tenseBox,qaBox,oddBox].forEach(b=>b.relang&&b.relang())}
 
 /* ---------- EXAM + PROGRESS ---------- */
 Object.assign(U,{
@@ -1502,7 +1692,7 @@ function renderProg(){
   const box=$("#progBox");
   const seen=Object.keys(qstat).length;let qa=0,qb=0;Object.values(qstat).forEach(([a,b])=>{qa+=a;qb+=b});
   const wsDone=WS.filter(w=>wsBest[w.id]===(w.items.join(" ").match(/\[/g)||[]).length).length;
-  let ta=0,tb=0;["pres","past","fut","imp"].forEach(k=>{if(trStat[k]){ta+=trStat[k][0];tb+=trStat[k][1]}});
+  let ta=0,tb=0;Object.keys(trStat).filter(k=>k!=="build").forEach(k=>{ta+=trStat[k][0];tb+=trStat[k][1]});
   const pc=(a,b)=>b?Math.round(a/b*100):0;
   const tiles=[[u("tQuiz"),seen,u("tQuizS",seen,Q.length,pc(qa,qb)),"test"],[u("tMist"),mistakes.size,u("tMistS"),"test"],[u("tWs"),wsDone,u("tWsS",wsDone,WS.length),"pisomny"],[u("tCards"),known.size,u("tCardsS",W.length),"karticky"],[u("tTr"),tb,u("tTrS",pc(ta,tb)),"trener"],[u("tBuild"),bSolved.size,u("tBuildS",SENT.length),"trener"]];
   // recommendations
@@ -1542,7 +1732,7 @@ function applyLang(){
 }
 document.querySelectorAll("#langSeg button").forEach(b=>b.onclick=()=>{
   LANG=b.dataset.v;try{localStorage.setItem("sk_lang",LANG)}catch(e){}
-  applyLang();renderChips();wsList();renderCard();trControls();if(bCur)bRender();if(!$("#vProg").hidden)renderProg();
+  applyLang();renderChips();wsList();renderCard();trControls();if(bCur)bRender();relangTrainer();if(!$("#vProg").hidden)renderProg();
   if(trCur&&!$("#trIn").disabled){const {v}=trCur;const sm=$("#trPrompt .small");if(sm)sm.textContent=LANG==="en"?v.en:v.ru;const tb=$("#trPrompt .t-"+trCur.tense);if(tb)tb.textContent=u(TNAME[trCur.tense])}
   if(!$("#quiz").hidden&&$("#fb").hidden)renderQ();
   if(!$("#result").hidden)finish();
