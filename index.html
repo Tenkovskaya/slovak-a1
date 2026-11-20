@@ -156,6 +156,33 @@ h2{font-family:var(--display);font-weight:600;font-size:1.15rem;margin:0}
 .wsIn.near{border-bottom-color:var(--warn);background:var(--warn-bg)}
 .wsIn:disabled{color:var(--fg);opacity:1}
 .corr{color:var(--ok);font-weight:600;font-size:.95rem}
+#vTrain,#vProg{display:flex;flex-direction:column;gap:14px}
+#vTrain[hidden],#vProg[hidden]{display:none}
+.trPrompt{display:flex;flex-direction:column;align-items:flex-start;gap:6px;padding:16px;border-radius:12px;background:var(--bg);border:1.5px solid var(--line)}
+.trVerb{font-family:var(--display);font-weight:800;font-size:clamp(1.7rem,7vw,2.3rem);line-height:1.1}
+.trBadges{display:flex;flex-wrap:wrap;gap:6px;margin-top:4px}
+.badge{font-size:.85rem;font-weight:600;border-radius:999px;padding:3px 10px;border:1.5px solid var(--line);background:var(--surface)}
+.badge.t-pres{border-color:var(--l3)}.badge.t-fut{border-color:var(--l4)}.badge.t-past{border-color:var(--l5)}.badge.t-imp{border-color:var(--l2)}
+.badge.neg{border-color:var(--bad);color:var(--bad)}
+#trIn{flex:1 1 220px;min-width:0;font:500 1.1rem var(--body);padding:12px 14px;border-radius:10px;border:1.5px solid var(--line);background:var(--surface);color:var(--fg)}
+#trIn.right{border-color:var(--ok);background:var(--ok-bg)}#trIn.wrong{border-color:var(--bad);background:var(--bad-bg)}#trIn.near{border-color:var(--warn);background:var(--warn-bg)}
+.mini-t{font-size:.9rem}.mini-t th{width:90px}
+.bTr{margin:0;font-size:1.05rem;font-weight:500;color:var(--muted)}
+.bAns{min-height:58px;border:1.5px dashed var(--line);border-radius:12px;padding:10px;display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.bPool{display:flex;flex-wrap:wrap;gap:8px}
+.tok{appearance:none;border:1.5px solid var(--line);background:var(--surface);color:var(--fg);border-radius:8px;padding:8px 12px;font:500 1.05rem var(--body);cursor:pointer}
+.tok:hover:not(:disabled){border-color:var(--accent)}
+.tok.on{background:color-mix(in srgb,var(--accent) 12%,var(--surface));border-color:var(--accent)}
+.tok:disabled{cursor:default}
+.timer{font-family:var(--mono);font-size:.95rem;font-weight:600;border:1.5px solid var(--line);border-radius:8px;padding:2px 8px;font-variant-numeric:tabular-nums}
+.timer.low{color:var(--bad);border-color:var(--bad)}
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,190px),1fr));gap:10px}
+.tile{display:flex;flex-direction:column;gap:4px;padding:14px;border-radius:12px;border:1.5px solid var(--line);background:var(--bg);color:var(--fg);text-decoration:none}
+.tile:hover{border-color:var(--accent)}
+.tile .big{font-family:var(--display);font-weight:800;font-size:2rem;line-height:1;font-variant-numeric:tabular-nums}
+.recs{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px}
+.recs li{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--line);flex-wrap:wrap}
+.recs li:last-child{border-bottom:0}
 </style>
 <style>[hidden]{display:none!important}img{max-width:100%}</style>
 </head>
@@ -171,9 +198,11 @@ h2{font-family:var(--display);font-weight:600;font-size:1.15rem;margin:0}
 
 <nav class="tabs" role="tablist">
   <a href="#test" data-v="test" role="tab">Тест</a>
-  <a href="#gramatika" data-v="gramatika" role="tab">Грамматика</a>
+  <a href="#trener" data-v="trener" role="tab" data-k="tabTrain"></a>
   <a href="#pisomny" data-v="pisomny" role="tab">Písomný test</a>
+  <a href="#gramatika" data-v="gramatika" role="tab">Грамматика</a>
   <a href="#karticky" data-v="karticky" role="tab">Карточки</a>
+  <a href="#progres" data-v="progres" role="tab" data-k="tabProg"></a>
 </nav>
 
 <div id="vTest">
@@ -197,6 +226,7 @@ h2{font-family:var(--display);font-weight:600;font-size:1.15rem;margin:0}
     <div class="row">
       <button class="btn" id="go">Начать тест</button>
       <button class="btn ghost" id="goGram">Тест по грамматике</button>
+      <button class="btn ghost" id="goExam" data-k="exam"></button>
       <button class="btn ghost" id="goMist" hidden>Только мои ошибки (<span id="mistN">0</span>)</button>
     </div>
     <p class="small" id="poolInfo"></p>
@@ -207,7 +237,7 @@ h2{font-family:var(--display);font-weight:600;font-size:1.15rem;margin:0}
     <div class="bar" aria-hidden="true"><i id="barFill"></i></div>
     <div class="qhead">
       <span class="tag" id="qTag"><span class="dot"></span><span></span></span>
-      <span class="count" id="qCount"></span>
+      <span class="row" style="gap:10px"><span class="timer" id="qTimer" hidden></span><span class="count" id="qCount"></span></span>
     </div>
     <p class="question" id="qText"></p>
     <p class="hint" id="qHint" hidden></p>
@@ -244,6 +274,31 @@ h2{font-family:var(--display);font-weight:600;font-size:1.15rem;margin:0}
   </section>
 
 </div>
+<div id="vTrain" hidden>
+  <div class="seg" id="trMode" style="align-self:flex-start"><button data-v="conj" aria-pressed="true" data-k="mConj"></button><button data-v="build" aria-pressed="false" data-k="mBuild"></button></div>
+  <section id="conjBox" class="panel">
+    <div style="display:flex;flex-direction:column;gap:6px"><span class="label" data-k="tenses"></span><div class="chips" id="trTenses"></div></div>
+    <div style="display:flex;flex-direction:column;gap:6px"><span class="label" data-k="opts"></span><div class="chips" id="trOpts"></div></div>
+    <span class="count" id="trStat"></span>
+    <div class="trPrompt" id="trPrompt"></div>
+    <p class="hint" data-k="trHint" style="margin:0"></p>
+    <div class="inrow"><input id="trIn" type="text" autocomplete="off" autocapitalize="off" spellcheck="false" aria-label="answer"><button class="btn" id="trCheck" data-k="check"></button></div>
+    <div class="keys" id="trKeys"></div>
+    <div id="trFb" class="fb" hidden></div>
+    <div class="actions" style="justify-content:flex-end"><button class="btn ghost" id="trNext"></button></div>
+  </section>
+  <section id="buildBox" class="panel" hidden>
+    <div class="row" style="justify-content:space-between"><h2 data-k="bTitle"></h2><span class="count" id="bStat"></span></div>
+    <p class="hint" data-k="bHint" style="margin:0"></p>
+    <p class="bTr" id="bTr"></p>
+    <div class="bAns" id="bAns"></div>
+    <div class="bPool" id="bPool"></div>
+    <div id="bFb" class="fb" hidden></div>
+    <div class="actions"><button class="btn ghost" id="bReset" data-k="bReset"></button><div class="row"><button class="btn" id="bCheck" data-k="check"></button><button class="btn ghost" id="bNext" data-k="nextTask"></button></div></div>
+  </section>
+</div>
+<div id="vProg" hidden><div id="progBox" style="display:flex;flex-direction:column;gap:22px"></div></div>
+
 <div id="vGram" hidden>
   <section class="panel gram">
     <p class="small" style="margin:0">Грамматика из приложения в конце учебника (Prílohy A–D). У каждого блока есть кнопка «Проверить себя» — короткий тест только по этой таблице.</p>
@@ -902,7 +957,7 @@ $("#allOff").onclick=()=>{selected=new Set();store.set("sk_topics",[]);renderChi
 document.querySelectorAll("#lenSeg button").forEach(b=>b.onclick=()=>{len=b.dataset.v;store.set("sk_len",len);renderChips()});
 
 function start(list){
-  run={list,idx:0,res:[]};
+  run={list,idx:0,res:[]};clearInterval(timerId);$("#qTimer").hidden=true;
   show("quiz");renderQ();
 }
 $("#go").onclick=()=>{let pool=shuffle(Q.filter(q=>selected.has(q.t)));if(len!=="all")pool=pool.slice(0,+len);start(pool)};
@@ -938,6 +993,7 @@ function renderQ(){
   }
 }
 function answerMC(btn,o){
+  if(run.exam){examRecord(o.ok,plain(tr(o.txt)));return}
   document.querySelectorAll(".opt").forEach(b=>{b.disabled=true;if(b.dataset.ok==="true")b.classList.add("right")});
   if(!o.ok)btn.classList.add("wrong");
   record(o.ok,plain(tr(o.txt)),o.ok?"ok":"bad");
@@ -946,6 +1002,7 @@ function answerIn(){
   const q=run.list[run.idx],inp=$("#ans"),v=inp.value;
   if(!v.trim()){inp.focus();return}
   const ok=q.a.some(a=>norm(a)===norm(v));
+  if(run.exam){examRecord(ok,v.trim());return}
   const near=!ok&&q.a.some(a=>strip(a)===strip(v));
   inp.disabled=true;$("#check").disabled=true;inp.classList.add(ok?"right":"wrong");
   record(ok,v.trim(),ok?"ok":near?"warn":"bad");
@@ -955,7 +1012,7 @@ $("#ans").addEventListener("keydown",e=>{if(e.key==="Enter"){e.preventDefault();
 
 function record(ok,given,kind){
   const q=run.list[run.idx];
-  run.res.push({q,ok,given});
+  run.res.push({q,ok,given});qRecord(q,ok);
   if(ok)mistakes.delete(q.id);else mistakes.add(q.id);
   store.set("sk_mist",[...mistakes]);
   const corr=q.type==="mc"?plain(tr(q.o[0])):q.a[0];
@@ -987,13 +1044,14 @@ function finish(){
   $("#retryMist").hidden=!wrong.length;$("#mistTitle").hidden=!wrong.length;
   $("#rMist").innerHTML=wrong.map(x=>`<li><span class="q">${plain(tr(x.q.q))}</span><span class="yours">${u("yours")} ${x.given.replace(/</g,"&lt;")}</span><span class="corr">${u("correct")} ${x.q.type==="mc"?plain(tr(x.q.o[0])):x.q.a[0]}</span><span class="ex">${tr(x.q.e)}</span></li>`).join("");
   $("#barFill").style.width="100%";
+  if(run.exam)examFinish();
   show("result");
 }
 $("#retryMist").onclick=()=>start(shuffle(run.res.filter(x=>!x.ok).map(x=>x.q)));
 $("#toStart").onclick=()=>{show("start");renderChips()};
 renderChips();
 /* ---------- VIEWS ---------- */
-const VIEWS={test:"vTest",gramatika:"vGram",pisomny:"vWs",karticky:"vCards"};
+const VIEWS={test:"vTest",trener:"vTrain",gramatika:"vGram",pisomny:"vWs",karticky:"vCards",progres:"vProg"};
 function route(){
   let v=(location.hash||"").slice(1);
   if(v.startsWith("g-")){setView("gramatika");const el=document.getElementById(v);if(el)el.scrollIntoView();return}
@@ -1003,6 +1061,8 @@ function setView(v){
   for(const [k,id] of Object.entries(VIEWS))$("#"+id).hidden=k!==v;
   document.querySelectorAll(".tabs a").forEach(a=>a.setAttribute("aria-selected",a.dataset.v===v));
   if(v==="karticky")renderCard();
+  if(v==="progres")renderProg();
+  if(v==="trener")setTrMode(trMode);
   $("#testHint").hidden=v!=="test";
 }
 document.querySelectorAll(".toc a").forEach(a=>a.addEventListener("click",e=>{e.preventDefault();document.querySelector(a.getAttribute("href")).scrollIntoView({behavior:"smooth"})}));
@@ -1159,18 +1219,331 @@ $("#wsKeys").addEventListener("click",e=>{const b=e.target.closest(".key");const
   const s=inp.selectionStart??inp.value.length,en=inp.selectionEnd??s;inp.value=inp.value.slice(0,s)+b.textContent+inp.value.slice(en);inp.focus();inp.setSelectionRange(s+1,s+1)});
 wsList();
 
+/* ---------- TRAINER: CONJUGATION ---------- */
+Object.assign(U,{
+ tabTrain:["Тренажёр","Trainer"],tabProg:["Прогресс","Progress"],
+ mConj:["Спряжение","Conjugation"],mBuild:["Порядок слов","Word order"],
+ tenses:["Времена","Tenses"],opts:["Дополнительно","Extras"],
+ tPres:["prézent","prézent"],tPast:["préteritum","préteritum"],tFut:["futúrum","futúrum"],tImp:["imperatív","imperatív"],
+ oNeg:["с отрицанием","with negation"],oRefl:["только sa / si","only sa / si"],
+ neg:["zápor","zápor"],man:["muž","muž"],woman:["žena","žena"],
+ trHint:["Напишите форму глагола. Местоимение можно не писать.","Write the verb form. You can leave out the pronoun."],
+ streak:["Подряд: {0}","Streak: {0}"],sess:["Верно {0} из {1}","{0} of {1} correct"],
+ check:["Проверить","Check"],nextTask:["Следующее →","Next →"],skip:["Пропустить","Skip"],
+ ok:["Správne!","Správne!"],bad:["Nesprávne.","Nesprávne."],
+ allForms:["Все формы:","All forms:"],noTense:["Выберите хотя бы одно время.","Choose at least one tense."],
+ perfNote:["Совершенный вид: будущее без budem, как «куплю».","Perfective verb: the future has no budem (“I'll buy”)."],
+ isNote:["ísť: будущее — pôjdem, а не budem ísť.","ísť: the future is pôjdem, not budem ísť."],
+ pastNote:["3-е лицо — без je / sú.","3rd person: no je / sú."],
+ bTitle:["Соберите предложение","Build the sentence"],
+ bHint:["Нажимайте на слова по порядку. Помните: som / si / sme / ste и sa / si — на 2-м месте.","Tap the words in order. Remember: som / si / sme / ste and sa / si go in 2nd place."],
+ bReset:["Сбросить","Reset"],bSolved:["Собрано: {0} из {1}","Solved: {0} of {1}"],
+ bRight:["Správne! Порядок верный.","Správne! The order is right."],bWrong:["Не совсем. Правильно:","Not quite. Correct:"],
+ bEmpty:["Сначала соберите предложение.","Build the sentence first."]
+});
+const VRAW=`byť||i|*|*|bol|bola|buď|быть|to be
+mať||i|mám|majú|mal||maj|иметь|to have
+čítať||i|čítam|čítajú|čítal||čítaj|читать|to read
+robiť||i|robím|robia|robil||rob|делать|to do
+hovoriť||i|hovorím|hovoria|hovoril||hovor|говорить|to speak
+písať||i|píšem|píšu|písal||píš|писать|to write
+piť||i|pijem|pijú|pil||pi|пить|to drink
+jesť||i|jem|jedia|jedol|jedla|jedz|есть|to eat
+ísť||i|idem|idú|išiel|išla|choď|идти|to go
+študovať||i|študujem|študujú|študoval||študuj|учиться, изучать|to study
+pracovať||i|pracujem|pracujú|pracoval||pracuj|работать|to work
+cestovať||i|cestujem|cestujú|cestoval||cestuj|путешествовать|to travel
+kupovať||i|kupujem|kupujú|kupoval||kupuj|покупать|to buy
+telefonovať||i|telefonujem|telefonujú|telefonoval||telefonuj|звонить|to phone
+raňajkovať||i|raňajkujem|raňajkujú|raňajkoval||raňajkuj|завтракать|to have breakfast
+variť||i|varím|varia|varil||var|готовить|to cook
+spať||i|spím|spia|spal||spi|спать|to sleep
+sedieť||i|sedím|sedia|sedel||seď|сидеть|to sit
+fajčiť||i|fajčím|fajčia|fajčil||fajči|курить|to smoke
+platiť||i|platím|platia|platil||plať|платить|to pay
+vidieť||i|vidím|vidia|videl|||видеть|to see
+rozumieť||i|rozumiem|rozumejú|rozumel|||понимать|to understand
+vedieť||i|viem|vedia|vedel|||знать, уметь|to know (how)
+chcieť||i|chcem|chcú|chcel|||хотеть|to want
+môcť||i|môžem|môžu|mohol|mohla||мочь|can, to be able
+musieť||i|musím|musia|musel|||быть должным|must
+bývať||i|bývam|bývajú|býval||bývaj|жить (где-то)|to live (somewhere)
+počúvať||i|počúvam|počúvajú|počúval||počúvaj|слушать|to listen
+čakať||i|čakám|čakajú|čakal||čakaj|ждать|to wait
+pozerať||i|pozerám|pozerajú|pozeral||pozeraj|смотреть|to watch
+hrať||i|hrám|hrajú|hral||hraj|играть|to play
+vstávať||i|vstávam|vstávajú|vstával||vstávaj|вставать|to get up
+žiť||i|žijem|žijú|žil||ži|жить|to live
+niesť||i|nesiem|nesú|niesol|niesla|nes|нести|to carry
+povedať||p|poviem|povedia|povedal||povedz|сказать|to say
+kúpiť||p|kúpim|kúpia|kúpil||kúp|купить|to buy (once)
+prísť||p|prídem|prídu|prišiel|prišla|príď|прийти|to come
+zabudnúť||p|zabudnem|zabudnú|zabudol|zabudla|zabudni|забыть|to forget
+zapnúť||p|zapnem|zapnú|zapol|zapla|zapni|включить|to switch on
+pomôcť||p|pomôžem|pomôžu|pomohol|pomohla|pomôž|помочь|to help
+napísať||p|napíšem|napíšu|napísal||napíš|написать|to write (and finish)
+otvoriť||p|otvorím|otvoria|otvoril||otvor|открыть|to open
+začať||p|začnem|začnú|začal||začni|начать|to begin
+umývať sa|sa|i|umývam|umývajú|umýval||umývaj|умываться|to wash (oneself)
+učiť sa|sa|i|učím|učia|učil||uč|учиться|to learn
+pýtať sa|sa|i|pýtam|pýtajú|pýtal||pýtaj|спрашивать|to ask
+prechádzať sa|sa|i|prechádzam|prechádzajú|prechádzal||prechádzaj|гулять|to go for a walk
+obliekať sa|sa|i|obliekam|obliekajú|obliekal||obliekaj|одеваться|to get dressed
+ponáhľať sa|sa|i|ponáhľam|ponáhľajú|ponáhľal||ponáhľaj|спешить|to hurry
+volať sa|sa|i|volám|volajú|volal|||называться, звать|to be called
+hrať sa|sa|i|hrám|hrajú|hral||hraj|играть (о детях)|to play (of children)
+sprchovať sa|sa|i|sprchujem|sprchujú|sprchoval||sprchuj|принимать душ|to shower
+stretnúť sa|sa|p|stretnem|stretnú|stretol|stretla|stretni|встретиться|to meet
+vrátiť sa|sa|p|vrátim|vrátia|vrátil||vráť|вернуться|to come back
+obliecť sa|sa|p|oblečiem|oblečú|obliekol|obliekla|obleč|одеться|to get dressed (once)
+sadnúť si|si|p|sadnem|sadnú|sadol|sadla|sadni|сесть|to sit down
+umývať si|si|i|umývam|umývajú|umýval||umývaj|мыть себе (руки, зубы)|to wash (one's hands, teeth)`;
+function presForms(ja,oni){
+  const E=[["iem",["iem","ieš","ie","ieme","iete"]],["ám",["ám","áš","á","áme","áte"]],["am",["am","aš","a","ame","ate"]],["ím",["ím","íš","í","íme","íte"]],["im",["im","iš","i","ime","ite"]],["em",["em","eš","e","eme","ete"]]];
+  for(const [suf,f] of E)if(ja.endsWith(suf)){const b=ja.slice(0,-suf.length);return [...f.map(x=>b+x),oni]}
+  throw ja;
+}
+const VERBS=VRAW.split("\n").map(l=>{const [inf,refl,asp,ja,oni,pm,pf,imp,ru,en]=l.split("|");
+  const v={inf,refl,asp,ru,en,base:inf.split(" ")[0]};
+  v.pres=inf==="byť"?["som","si","je","sme","ste","sú"]:presForms(ja,oni);
+  v.pm=pm;v.pf=pf||pm+"a";v.pp=v.pf.slice(0,-1)+"i";v.imp=imp||null;return v});
+const PERS=[["ja_m","ja",0,"m"],["ja_f","ja",0,"f"],["ty_m","ty",1,"m"],["ty_f","ty",1,"f"],["on","on",2,"m"],["ona","ona",2,"f"],["my","my",3,"p"],["vy","vy",4,"p"],["oni","oni",5,"p"]];
+const AUX=["som","si","","sme","ste",""],BUD=["budem","budeš","bude","budeme","budete","budú"],POJ=["pôjdem","pôjdeš","pôjde","pôjdeme","pôjdete","pôjdu"];
+function conj(v,tense,p,neg){
+  const [,pron,i,g]=p,R=v.refl,ne=neg?"ne":"";let main,alts=[];
+  const withR=(form)=>R?form+" "+R:form, pronR=(form)=>pron+" "+(R?R+" ":"")+form;
+  if(tense==="pres"||(tense==="fut"&&v.asp==="p")){
+    let f=v.pres[i];
+    if(neg){f=v.inf==="byť"?"nie "+f:v.inf==="ísť"?"nej"+f.slice(1):"ne"+f}
+    main=withR(f);alts=[pronR(f)];
+  }else if(tense==="past"){
+    const part=ne+(g==="m"?v.pm:g==="f"?v.pf:v.pp),a=AUX[i];
+    if(a){main=part+" "+a+(R?" "+R:"");alts=[pron+" "+a+(R?" "+R:"")+" "+part,a+(R?" "+R:"")+" "+part]}
+    else{main=withR(part);alts=[pronR(part)]}
+  }else if(tense==="fut"){
+    if(v.inf==="ísť"){main=ne+POJ[i];alts=[pron+" "+main]}
+    else if(v.inf==="byť"){main=ne+BUD[i];alts=[pron+" "+main]}
+    else{const b=ne+BUD[i];main=R?`${b} ${R} ${v.base}`:`${b} ${v.base}`;alts=[R?`${pron} ${R} ${b} ${v.base}`:`${pron} ${b} ${v.base}`]}
+  }else{ // imp: i=1 ty,3 my,4 vy
+    const f=ne+(i===1?v.imp:i===3?v.imp+"me":v.imp+"te");main=withR(f);
+    if(v.inf==="ísť"){const pf=ne+(i===1?"poď":i===3?"poďme":"poďte");alts=[withR(pf)]}
+  }
+  return {main,alts:[main,...alts]};
+}
+function pLabel(p,tense){const [k,pron,,g]=p;if(tense==="past"&&(k.startsWith("ja")||k.startsWith("ty")))return `${pron} (${g==="m"?u("man"):u("woman")})`;return pron}
+let trT=new Set(store.get("sk_trT",["pres","past","fut","imp"])),trNeg=store.get("sk_trNeg",true),trRefl=store.get("sk_trRefl",false);
+let trStat=store.get("sk_tstat",{}),trCur=null,trStreak=0,trR=0,trN=0;
+const TNAME={pres:"tPres",past:"tPast",fut:"tFut",imp:"tImp"};
+function trControls(){
+  const tb=$("#trTenses");tb.innerHTML="";
+  for(const t of ["pres","fut","past","imp"]){const b=document.createElement("button");b.className="chip";b.style.setProperty("--c",{pres:"var(--l3)",fut:"var(--l4)",past:"var(--l5)",imp:"var(--l2)"}[t]);
+    b.setAttribute("aria-pressed",trT.has(t));b.innerHTML=`<span class="dot"></span>${u(TNAME[t])}`;
+    b.onclick=()=>{trT.has(t)?trT.delete(t):trT.add(t);store.set("sk_trT",[...trT]);trControls();newTask()};tb.appendChild(b)}
+  const ob=$("#trOpts");ob.innerHTML="";
+  [["neg",()=>trNeg,x=>{trNeg=x;store.set("sk_trNeg",x)}],["refl",()=>trRefl,x=>{trRefl=x;store.set("sk_trRefl",x)}]].forEach(([k,gt,st])=>{
+    const b=document.createElement("button");b.className="chip";b.style.setProperty("--c","var(--accent)");b.setAttribute("aria-pressed",gt());
+    b.innerHTML=`<span class="dot"></span>${u(k==="neg"?"oNeg":"oRefl")}`;b.onclick=()=>{st(!gt());trControls();newTask()};ob.appendChild(b)});
+  $("#trStat").textContent=`${u("streak",trStreak)} · ${u("sess",trR,trN)}`;
+}
+function rnd(a){return a[Math.floor(Math.random()*a.length)]}
+function newTask(){
+  const ts=[...trT];if(!ts.length){$("#trPrompt").innerHTML=`<span class="small">${u("noTense")}</span>`;$("#trIn").disabled=true;return}
+  for(let k=0;k<200;k++){
+    const tense=rnd(ts);let pool=VERBS.filter(v=>(!trRefl||v.refl)&&(tense!=="pres"||v.asp==="i"));
+    if(tense==="imp")pool=pool.filter(v=>v.imp);
+    if(!pool.length)continue;const v=rnd(pool);
+    const ps=tense==="imp"?PERS.filter(p=>["ty_m","my","vy"].includes(p[0])):tense==="past"?PERS:PERS.filter(p=>!["ja_f","ty_f"].includes(p[0]));
+    const p=rnd(ps);let neg=trNeg&&Math.random()<0.3;
+    if(tense==="imp"&&v.asp==="p")neg=false;
+    trCur={v,tense,p,neg,ans:conj(v,tense,p,neg)};break;
+  }
+  const {v,tense,p,neg}=trCur;
+  $("#trPrompt").innerHTML=`<span class="trVerb">${v.inf}</span><span class="small">${LANG==="en"?v.en:v.ru}</span><span class="trBadges"><span class="badge">${tense==="imp"?(p[1]==="ja"?"ty":p[1]):pLabel(p,tense)}</span><span class="badge t-${tense}">${u(TNAME[tense])}</span>${neg?`<span class="badge neg">${u("neg")}</span>`:""}</span>`;
+  const inp=$("#trIn");inp.value="";inp.disabled=false;inp.className="";$("#trFb").hidden=true;$("#trCheck").hidden=false;$("#trNext").textContent=u("skip");
+  setTimeout(()=>inp.focus({preventScroll:true}),30);trControls();
+}
+function formsTable(v,tense){
+  const P=k=>PERS.find(p=>p[0]===k);
+  const rows=tense==="imp"?[["ty_m"],["my"],["vy"]]:tense==="past"?[["ja_m","ja_f"],["ty_m","ty_f"],["on","ona"],["my"],["vy"],["oni"]]:[["ja_m"],["ty_m"],["on","ona"],["my"],["vy"],["oni"]];
+  return rows.map(ks=>`<tr><td>${ks.map(k=>{const c=conj(v,tense,P(k),false);return tense==="imp"?c.main+"!":c.alts[1]}).join(" / ")}</td></tr>`).join("");
+}
+function trCheck(){
+  const inp=$("#trIn"),v=inp.value;if(!v.trim()||!trCur){inp.focus();return}
+  const {ans,tense,v:verb}=trCur,ok=ans.alts.some(a=>norm(a)===norm(v)),near=!ok&&ans.alts.some(a=>strip(a)===strip(v));
+  inp.disabled=true;inp.className=ok?"right":near?"near":"wrong";
+  trN++;if(ok){trR++;trStreak++}else trStreak=0;
+  const st=trStat[tense]||[0,0];st[1]++;if(ok)st[0]++;trStat[tense]=st;store.set("sk_tstat",trStat);
+  let note="";if(tense==="fut"&&verb.asp==="p")note=u("perfNote");else if(tense==="fut"&&verb.inf==="ísť")note=u("isNote");else if(tense==="past"&&["on","ona","oni"].includes(trCur.p[0]))note=u("pastNote");
+  const fb=$("#trFb");fb.hidden=false;fb.className="fb "+(ok?"ok":near?"warn":"bad");
+  fb.innerHTML=`<b>${ok?u("ok"):near?u("almost"):u("bad")}</b>${ok?"":`<span>${u("correct")} <span class="ans">${ans.main}</span></span>`}${note?`<span>${note}</span>`:""}<span class="small">${u("allForms")}</span><div class="tw"><table class="two mini-t"><tbody>${formsTable(verb,tense)}</tbody></table></div>`;
+  $("#trCheck").hidden=true;$("#trNext").textContent=u("nextTask");$("#trNext").focus({preventScroll:true});trControls();
+}
+$("#trCheck").onclick=trCheck;$("#trNext").onclick=newTask;
+$("#trIn").addEventListener("keydown",e=>{if(e.key==="Enter"){e.preventDefault();$("#trIn").disabled?newTask():trCheck()}});
+$("#trKeys").innerHTML=KEYS.map(k=>`<button class="key" type="button" tabindex="-1">${k}</button>`).join("");
+$("#trKeys").addEventListener("mousedown",e=>e.preventDefault());
+$("#trKeys").addEventListener("click",e=>{const b=e.target.closest(".key"),inp=$("#trIn");if(!b||inp.disabled)return;const s=inp.selectionStart??inp.value.length,en=inp.selectionEnd??s;inp.value=inp.value.slice(0,s)+b.textContent+inp.value.slice(en);inp.focus();inp.setSelectionRange(s+1,s+1)});
+
+/* ---------- TRAINER: WORD ORDER ---------- */
+const SENT=[
+["Včera sme večerali ryžu a zeleninu.","Вчера мы ужинали рисом и овощами.","Yesterday we had rice and vegetables for dinner.","Včera sme večerali zeleninu a ryžu."],
+["Kedy si bol v Bratislave?","Когда ты был в Братиславе?","When were you in Bratislava?"],
+["Minulý týždeň som fotografoval syna.","На прошлой неделе я фотографировал сына.","Last week I photographed my son."],
+["Čo ste robili minulý víkend?","Что вы делали в прошлые выходные?","What did you do last weekend?"],
+["Boli sme doma a relaxovali sme.","Мы были дома и отдыхали.","We were at home and relaxed."],
+["Kedy si sa vrátil domov?","Когда ты вернулся домой?","When did you come back home?"],
+["Zuzana čítala zaujímavú knihu.","Зузана читала интересную книгу.","Zuzana was reading an interesting book."],
+["Včera som nepil pivo.","Вчера я не пил пиво.","Yesterday I didn't drink beer."],
+["Kde ste boli včera?","Где вы были вчера?","Where were you yesterday?"],
+["Ráno som pil kávu.","Утром я пил кофе.","In the morning I drank coffee."],
+["Ráno som sa umývala.","Утром я умывалась.","In the morning I washed."],
+["Čo si si prosil?","Что ты себе заказал?","What did you order?"],
+["Prepáčte, že som meškal.","Извините, что я опоздал.","Sorry I was late."],
+["Doma ste spali alebo ste pozerali film?","Дома вы спали или смотрели фильм?","At home, did you sleep or watch a film?"],
+["Včera sme sa učili po slovensky.","Вчера мы учили словацкий.","Yesterday we studied Slovak."],
+["Zajtra sa budem učiť.","Завтра я буду учиться.","Tomorrow I'll study."],
+["Budúci týždeň pôjdeme do kina.","На следующей неделе мы пойдём в кино.","Next week we'll go to the cinema."],
+["V sobotu sa budeme prechádzať v parku.","В субботу мы будем гулять в парке.","On Saturday we'll walk in the park."],
+["Ako sa voláš?","Как тебя зовут?","What's your name?"],
+["Každé ráno si umývam zuby.","Каждое утро я чищу зубы.","Every morning I brush my teeth."],
+["Peter sa každý deň sprchuje.","Петер каждый день принимает душ.","Peter showers every day.","Peter sa sprchuje každý deň."],
+["Deti sa hrali vonku.","Дети играли на улице.","The children played outside."],
+["Kde si bola včera večer?","Где ты была вчера вечером?","Where were you last night?"],
+["Minulý rok sme bývali v Prahe.","В прошлом году мы жили в Праге.","Last year we lived in Prague."],
+["Učiteľka sa posadila.","Учительница села.","The teacher sat down."],
+["Rýchlo som sa obliekla.","Я быстро оделась.","I got dressed quickly."],
+["Nabokov žil v Amerike.","Набоков жил в Америке.","Nabokov lived in America."],
+["Čo ste jedli na obed?","Что вы ели на обед?","What did you have for lunch?"],
+["Večer som čítala knihu a potom som išla spať.","Вечером я читала книгу, а потом пошла спать.","In the evening I read a book and then went to bed."],
+["Zajtra nebudem pracovať.","Завтра я не буду работать.","Tomorrow I won't work."],
+["Musím sa učiť po slovensky.","Мне нужно учить словацкий.","I have to study Slovak."],
+["Môžem otvoriť okno?","Можно открыть окно?","May I open the window?"],
+["S kamarátom sa stretol v kaviarni.","Он встретился с другом в кафе.","He met his friend in a café.","S kamarátom sa v kaviarni stretol."],
+["Prečo si sa nepýtal?","Почему ты не спросил?","Why didn't you ask?"],
+["Mám rada čiernu kávu.","Я люблю чёрный кофе.","I like black coffee."],
+["Popoludní sa budem prechádzať s manželom.","После обеда я буду гулять с мужем.","In the afternoon I'll go for a walk with my husband."],
+["Oni sa budú tešiť na dovolenku.","Они будут радоваться отпуску.","They'll look forward to the holiday."],
+["Včera som sa stretla s kamarátkou.","Вчера я встретилась с подругой.","Yesterday I met my friend."],
+["Kedy ste sa vrátili z dovolenky?","Когда вы вернулись из отпуска?","When did you come back from holiday?"],
+["Ráno sme sa ponáhľali do školy.","Утром мы спешили в школу.","In the morning we hurried to school."]
+];
+let bSolved=new Set(store.get("sk_bsolved",[])),bOrder=[],bi=0,bCur=null,bAns=[],bDone=false;
+function bNew(){
+  if(!bOrder.length||bi>=bOrder.length){bOrder=shuffle(SENT.map((_,k)=>k));bi=0}
+  const k=bOrder[bi++];const s=SENT[k];let toks=s[0].split(" ");
+  let mix;do{mix=shuffle(toks.map((t,j)=>({t,j})))}while(toks.length>2&&mix.map(x=>x.t).join(" ")===s[0]);
+  bCur={k,s,mix};bAns=[];bDone=false;bRender();$("#bFb").hidden=true;$("#bCheck").hidden=false;
+}
+function bRender(){
+  const s=bCur.s;$("#bTr").textContent=LANG==="en"?s[2]:s[1];
+  $("#bStat").textContent=u("bSolved",bSolved.size,SENT.length);
+  const ans=$("#bAns"),pool=$("#bPool");ans.innerHTML="";pool.innerHTML="";
+  bAns.forEach((x,n)=>{const b=document.createElement("button");b.className="tok on";b.textContent=x.t;b.disabled=bDone;b.onclick=()=>{bAns.splice(n,1);bRender()};ans.appendChild(b)});
+  if(!bAns.length){const p=document.createElement("span");p.className="small";p.textContent="…";ans.appendChild(p)}
+  bCur.mix.forEach(x=>{if(bAns.includes(x))return;const b=document.createElement("button");b.className="tok";b.textContent=x.t;b.disabled=bDone;b.onclick=()=>{bAns.push(x);bRender();if(bAns.length===bCur.mix.length)bCheck()};pool.appendChild(b)});
+}
+function bCheck(){
+  if(!bAns.length){const fb=$("#bFb");fb.hidden=false;fb.className="fb warn";fb.innerHTML=`<b>${u("bEmpty")}</b>`;return}
+  if(bAns.length<bCur.mix.length)return;
+  const got=bAns.map(x=>x.t).join(" "),s=bCur.s,ok=[s[0],...s.slice(3)].includes(got);
+  bDone=true;bRender();const fb=$("#bFb");fb.hidden=false;fb.className="fb "+(ok?"ok":"bad");
+  fb.innerHTML=ok?`<b>${u("bRight")}</b>`:`<b>${u("bWrong")}</b><span class="ans">${s[0]}</span>`;
+  if(ok){bSolved.add(bCur.k);store.set("sk_bsolved",[...bSolved]);$("#bStat").textContent=u("bSolved",bSolved.size,SENT.length)}
+  const st=trStat.build||[0,0];st[1]++;if(ok)st[0]++;trStat.build=st;store.set("sk_tstat",trStat);
+  $("#bCheck").hidden=true;$("#bNext").focus({preventScroll:true});
+}
+$("#bCheck").onclick=bCheck;$("#bNext").onclick=bNew;$("#bReset").onclick=()=>{if(!bDone){bAns=[];bRender()}};
+let trMode="conj";
+function setTrMode(m){trMode=m;document.querySelectorAll("#trMode button").forEach(b=>b.setAttribute("aria-pressed",b.dataset.v===m));$("#conjBox").hidden=m!=="conj";$("#buildBox").hidden=m!=="build";if(m==="conj"&&!trCur)newTask();if(m==="build"&&!bCur)bNew()}
+document.querySelectorAll("#trMode button").forEach(b=>b.onclick=()=>setTrMode(b.dataset.v));
+
+/* ---------- EXAM + PROGRESS ---------- */
+Object.assign(U,{
+ exam:["Режим экзамена","Exam mode"],examInfo:["30 вопросов · 20 минут · без подсказок","30 questions · 20 minutes · no hints"],
+ grade:["Оценка: {0}","Grade: {0}"],gradeNote:["Шкала A–FX, как в словацких вузах (A ≥ 91 %, E ≥ 51 %).","A–FX scale used at Slovak universities (A ≥ 91 %, E ≥ 51 %)."],
+ unanswered:["Без ответа: {0}","Unanswered: {0}"],timeUp:["Время вышло.","Time's up."],
+ pTitle:["Мой прогресс","My progress"],pToday:["Что повторить сегодня","What to review today"],
+ pTopics:["Тест по темам","Quiz by topic"],pExams:["Экзамены","Exams"],pNoExam:["Экзаменов ещё не было.","No exams yet."],
+ tQuiz:["Тест","Quiz"],tQuizS:["{0} из {1} вопросов · {2} % верно","{0} of {1} questions · {2} % correct"],
+ tMist:["Ошибки","Mistakes"],tMistS:["ждут повторения","waiting for review"],
+ tWs:["Písomný test","Písomný test"],tWsS:["{0} из {1} заданий без ошибок","{0} of {1} exercises with no mistakes"],
+ tCards:["Карточки","Flashcards"],tCardsS:["слов выучено из {0}","words learned out of {0}"],
+ tTr:["Тренажёр","Trainer"],tTrS:["ответов · {0} % верно","answers · {0} % correct"],
+ tBuild:["Порядок слов","Word order"],tBuildS:["предложений собрано из {0}","sentences solved out of {0}"],
+ notTried:["ещё не пробовали","not tried yet"],
+ rTopic:["Тема «{0}»: {1} % верно","Topic “{0}”: {1} % correct"],rTopicNew:["Тема «{0}»: ещё не пробовали","Topic “{0}”: not tried yet"],
+ rMist:["{0} вопросов с ошибками","{0} questions with mistakes"],
+ rWs:["Písomný test: {0}","Písomný test: {0}"],rCards:["Карточки, урок {0}: выучено {1} %","Flashcards, lesson {0}: {1} % learned"],
+ rTr:["Тренажёр: {0} — {1} % верно","Trainer: {0}: {1} % correct"],rExam:["Попробуйте режим экзамена","Try the exam mode"],
+ go:["Начать","Start"],allGood:["Отлично, всё повторено. Можно пройти экзамен.","Great, everything is reviewed. Try an exam."],
+ reset:["Сбросить весь прогресс","Reset all progress"],resetSure:["Нажмите ещё раз, чтобы удалить","Press again to delete"],
+ attempts:["{0} отв.","{0} ans."]
+});
+let qstat=store.get("sk_qstat",{}),exams=store.get("sk_exams",[]),timerId=null;
+function qRecord(q,ok){const s=qstat[q.id]||[0,0];s[1]++;if(ok)s[0]++;qstat[q.id]=s;store.set("sk_qstat",qstat)}
+function examRecord(ok,given){const q=run.list[run.idx];run.res.push({q,ok,given});qRecord(q,ok);if(ok)mistakes.delete(q.id);else mistakes.add(q.id);store.set("sk_mist",[...mistakes]);next()}
+function gradeOf(p){return p>=91?"A":p>=81?"B":p>=71?"C":p>=61?"D":p>=51?"E":"FX"}
+function startExam(){
+  start(shuffle(Q).slice(0,30));run.exam=true;run.end=Date.now()+20*60000;
+  const t=$("#qTimer");t.hidden=false;clearInterval(timerId);
+  const tick=()=>{const left=Math.max(0,run.end-Date.now()),m=Math.floor(left/60000),s=Math.floor(left%60000/1000);t.textContent=`${m}:${String(s).padStart(2,"0")}`;t.classList.toggle("low",left<120000);if(!left){clearInterval(timerId);run.timeUp=true;finish()}};
+  tick();timerId=setInterval(tick,1000);
+}
+$("#goExam").onclick=startExam;
+function examFinish(){
+  clearInterval(timerId);$("#qTimer").hidden=true;
+  const r=run.res,ok=r.filter(x=>x.ok).length,n=run.list.length,pct=Math.round(ok/n*100),g=gradeOf(pct);
+  if(!run.saved){exams.unshift({d:Date.now(),pct,g,ok,n});exams=exams.slice(0,20);store.set("sk_exams",exams);run.saved=true}
+  $("#rScore").textContent=pct+"%";
+  $("#rVerdict").innerHTML=`<b>${u("grade",g)}</b><br>${u("score",ok,n)}${n>r.length?` · ${u("unanswered",n-r.length)}`:""}${run.timeUp?`<br>${u("timeUp")}`:""}<br><span class="small">${u("gradeNote")}</span>`;
+}
+function topicAcc(t){let a=0,b=0;Q.forEach(q=>{if(q.t===t&&qstat[q.id]){a+=qstat[q.id][0];b+=qstat[q.id][1]}});return [a,b]}
+function renderProg(){
+  const box=$("#progBox");
+  const seen=Object.keys(qstat).length;let qa=0,qb=0;Object.values(qstat).forEach(([a,b])=>{qa+=a;qb+=b});
+  const wsDone=WS.filter(w=>wsBest[w.id]===(w.items.join(" ").match(/\[/g)||[]).length).length;
+  let ta=0,tb=0;["pres","past","fut","imp"].forEach(k=>{if(trStat[k]){ta+=trStat[k][0];tb+=trStat[k][1]}});
+  const pc=(a,b)=>b?Math.round(a/b*100):0;
+  const tiles=[[u("tQuiz"),seen,u("tQuizS",seen,Q.length,pc(qa,qb)),"test"],[u("tMist"),mistakes.size,u("tMistS"),"test"],[u("tWs"),wsDone,u("tWsS",wsDone,WS.length),"pisomny"],[u("tCards"),known.size,u("tCardsS",W.length),"karticky"],[u("tTr"),tb,u("tTrS",pc(ta,tb)),"trener"],[u("tBuild"),bSolved.size,u("tBuildS",SENT.length),"trener"]];
+  // recommendations
+  const rec=[];
+  const tops=Object.keys(TOPICS).map(t=>{const [a,b]=topicAcc(t);return {t,a,b,p:pc(a,b)}});
+  tops.filter(x=>x.b>=3&&x.p<80).sort((x,y)=>x.p-y.p).slice(0,3).forEach(x=>rec.push([u("rTopic",tr(TOPICS[x.t].n),x.p),()=>{location.hash="test";start(shuffle(Q.filter(q=>q.t===x.t)).slice(0,20))}]));
+  if(mistakes.size)rec.push([u("rMist",mistakes.size),()=>{location.hash="test";start(shuffle(Q.filter(q=>mistakes.has(q.id))))}]);
+  const trW=["pres","fut","past","imp"].map(k=>({k,s:trStat[k]||[0,0]})).filter(x=>x.s[1]>=5&&pc(...x.s)<80).sort((a,b)=>pc(...a.s)-pc(...b.s))[0];
+  if(trW)rec.push([u("rTr",u(TNAME[trW.k]),pc(...trW.s)),()=>{trT=new Set([trW.k]);store.set("sk_trT",[...trT]);location.hash="trener";setTrMode("conj");newTask()}]);
+  const wsW=WS.find(w=>{const n=(w.items.join(" ").match(/\[/g)||[]).length;return wsBest[w.id]!=null&&wsBest[w.id]/n<0.7})||WS.find(w=>wsBest[w.id]==null);
+  if(wsW)rec.push([u("rWs",w2(wsW)),()=>{location.hash="pisomny";openWs(wsW)}]);
+  const les=[1,2,3,4,5,6].map(l=>{const all=W.filter(w=>w[2]===l),k=all.filter(w=>known.has(w[0])).length;return {l,p:pc(k,all.length)}}).sort((a,b)=>a.p-b.p)[0];
+  if(les&&les.p<90)rec.push([u("rCards",les.l,les.p),()=>{cLess=new Set([les.l]);store.set("sk_cl",[...cLess]);cFilt="todo";buildDeck();location.hash="karticky"}]);
+  tops.filter(x=>!x.b).slice(0,2).forEach(x=>rec.push([u("rTopicNew",tr(TOPICS[x.t].n)),()=>{location.hash="test";start(shuffle(Q.filter(q=>q.t===x.t)).slice(0,20))}]));
+  if(!exams.length)rec.push([u("rExam"),()=>{location.hash="test";startExam()}]);
+  box.innerHTML=`<section class="panel"><h2>${u("pTitle")}</h2><div class="tiles">${tiles.map(t=>`<a class="tile" href="#${t[3]}"><span class="label">${t[0]}</span><span class="big">${t[1]}</span><span class="small">${t[2]}</span></a>`).join("")}</div></section>
+  <section class="panel"><h2>${u("pToday")}</h2><ul class="recs" id="recs">${rec.length?rec.slice(0,6).map((r,k)=>`<li><span>${r[0]}</span><button class="btn ghost sm" data-r="${k}">${u("go")}</button></li>`).join(""):`<li><span>${u("allGood")}</span></li>`}</ul></section>
+  <section class="panel"><h2>${u("pTopics")}</h2><div class="topics">${tops.map(x=>`<div class="trow" style="--c:${LCOL[TOPICS[x.t].l]}"><span>${tr(TOPICS[x.t].n)}</span><span class="mini"><i style="width:${x.p}%"></i></span><span class="pct">${x.b?x.p+" %":"—"}</span></div>`).join("")}</div></section>
+  <section class="panel"><h2>${u("pExams")}</h2>${exams.length?`<ul class="recs">${exams.map(e=>`<li><span>${new Date(e.d).toLocaleDateString(LANG==="en"?"en-GB":"ru-RU",{day:"numeric",month:"short",hour:"2-digit",minute:"2-digit"})}</span><span><b>${e.g}</b> · ${e.pct} % · ${e.ok}/${e.n}</span></li>`).join("")}</ul>`:`<p class="small" style="margin:0">${u("pNoExam")}</p>`}
+  <button class="linkbtn" id="resetAll" style="align-self:flex-start">${u("reset")}</button></section>`;
+  box.querySelectorAll("[data-r]").forEach(b=>b.onclick=()=>rec[+b.dataset.r][1]());
+  let armed=false;$("#resetAll").onclick=e=>{if(!armed){armed=true;e.target.textContent=u("resetSure");return}
+    ["sk_qstat","sk_mist","sk_ws","sk_known","sk_tstat","sk_bsolved","sk_exams"].forEach(k=>{try{localStorage.removeItem(k)}catch(_){}});
+    qstat={};mistakes=new Set();wsBest={};known=new Set();trStat={};bSolved=new Set();exams=[];renderChips();wsList();buildDeck();renderProg()};
+}
+function w2(w){return w.s+" · "+w.t.replace(/^\d+\.\s*/,"")}
+
 /* ---------- LANGUAGE ---------- */
 const SNODES=[];
 (function collect(){const tw=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT,{acceptNode:n=>{const pn=n.parentNode&&n.parentNode.nodeName;return pn==="SCRIPT"||pn==="STYLE"||!/[А-Яа-я]/.test(n.nodeValue)?NodeFilter.FILTER_REJECT:NodeFilter.FILTER_ACCEPT}});let n;while(n=tw.nextNode()){const v=n.nodeValue,t=v.trim();SNODES.push([n,v.slice(0,v.indexOf(t)),t,v.slice(v.indexOf(t)+t.length)])}
 document.querySelectorAll("[placeholder],[aria-label]").forEach(el=>["placeholder","aria-label"].forEach(a=>{const v=el.getAttribute(a);if(v&&/[А-Яа-я]/.test(v))SNODES.push([el,a,v])}))})();
 function applyLang(){
+  document.querySelectorAll("[data-k]").forEach(el=>el.textContent=u(el.dataset.k));
   document.documentElement.lang=LANG;
   SNODES.forEach(x=>{if(x.length===4)x[0].nodeValue=x[1]+tr(x[2])+x[3];else x[0].setAttribute(x[1],tr(x[2]))});
   document.querySelectorAll("#langSeg button").forEach(b=>b.setAttribute("aria-pressed",b.dataset.v===LANG));
 }
 document.querySelectorAll("#langSeg button").forEach(b=>b.onclick=()=>{
   LANG=b.dataset.v;try{localStorage.setItem("sk_lang",LANG)}catch(e){}
-  applyLang();renderChips();wsList();renderCard();
+  applyLang();renderChips();wsList();renderCard();trControls();if(bCur)bRender();if(!$("#vProg").hidden)renderProg();
+  if(trCur&&!$("#trIn").disabled){const {v}=trCur;const sm=$("#trPrompt .small");if(sm)sm.textContent=LANG==="en"?v.en:v.ru;const tb=$("#trPrompt .t-"+trCur.tense);if(tb)tb.textContent=u(TNAME[trCur.tense])}
   if(!$("#quiz").hidden&&$("#fb").hidden)renderQ();
   if(!$("#result").hidden)finish();
   if(!$("#wsOne").hidden&&curWs){$("#wsRu").textContent=tr(curWs.ru)}
