@@ -1,0 +1,29 @@
+{
+  "name": "Slovenčina A1",
+  "short_name": "Slovenčina A1",
+  "description": "Подготовка к тесту по словацкому A1 / Slovak A1 test practice",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f6f7fb",
+  "theme_color": "#3b4fd8",
+  "lang": "ru",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    },
+    {
+      "src": "icon-maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}
