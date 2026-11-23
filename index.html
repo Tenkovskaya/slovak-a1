@@ -244,6 +244,23 @@ button.tile{appearance:none;font:inherit;text-align:left;cursor:pointer}
 .lvlhero button b{font-family:var(--display);font-size:1.3rem}
 .lvlhero button[aria-pressed="true"]{border-color:var(--accent);background:color-mix(in srgb,var(--accent) 12%,transparent)}
 .lesbar .lvlseg{margin-right:6px}
+.rulebtn{display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;flex:0 0 24px;border-radius:50%;border:0;background:var(--accent);color:#fff;font:800 .9rem/1 var(--body);cursor:pointer;padding:0}
+.rulebtn:hover{filter:brightness(1.1)}
+.qtagwrap{display:inline-flex;align-items:center;gap:8px}
+.wshead{display:flex;flex-wrap:wrap;align-items:center;column-gap:10px}
+.wshead #wsRu{flex-basis:100%}
+.trrule{align-self:flex-start;display:inline-flex;align-items:center;gap:8px}
+.trrule .rulebtn{width:20px;height:20px;flex-basis:20px;font-size:.8rem}
+.ruledlg{width:min(760px,calc(100% - 20px));max-height:88vh;padding:0;border:1px solid var(--line);border-radius:16px;background:var(--surface);color:inherit;box-shadow:0 20px 60px rgba(0,0,0,.25);overflow:hidden}
+.ruledlg[open]{display:flex;flex-direction:column}
+.ruledlg::backdrop{background:rgba(15,20,40,.45)}
+.rulehead{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:14px 18px;border-bottom:1px solid var(--line)}
+.rulex{border:0;background:transparent;font-size:1.1rem;cursor:pointer;color:inherit;padding:4px 8px;border-radius:8px}
+.rulex:hover{background:var(--line)}
+.rulebody{overflow:auto;padding:16px 18px;display:flex;flex-direction:column;gap:22px}
+.rulesec{display:flex;flex-direction:column;gap:14px}
+.rulesec .ghead{margin:0}
+.rulefoot{padding:12px 18px;border-top:1px solid var(--line)}
 html[lang="en"] .lr{display:none}html:not([lang="en"]) .le{display:none}
 </style>
 </head>
@@ -2167,7 +2184,7 @@ renderChips();
 const VIEWS={domov:"vHome",test:"vTest",trener:"vTrain",gramatika:"vGram",pisomny:"vWs",karticky:"vCards",progres:"vProg"};
 function route(){
   let v=(location.hash||"").slice(1);
-  if(v.startsWith("g-")){setView("gramatika");const el=document.getElementById(v);if(el)el.scrollIntoView();return}
+  if(/^g2?-/.test(v)){setView("gramatika");const el=document.getElementById(v);if(el)el.scrollIntoView();return}
   if(!VIEWS[v])v="domov";setView(v);
 }
 function setView(v){
@@ -2976,6 +2993,118 @@ function setLevel(lv){
   if(!$("#vGram").hidden)window.scrollTo({top:0});
 }
 
+/* ---------- RULE POPUP ("!") ---------- */
+const RL=(ru,en)=>`<span class="lr">${ru}</span><span class="le">${en}</span>`;
+const RULE_X={
+ cis:`<h2>${RL("Числа, цены, время","Numbers, prices, time")}</h2>
+  <div class="tw"><table><tbody>
+   <tr><th>1–10</th><td>jeden, dva, tri, štyri, päť, šesť, sedem, osem, deväť, desať</td></tr>
+   <tr><th>11–19 · -násť</th><td>jedenásť, dvanásť, trinásť, štrnásť, pätnásť, šestnásť, sedemnásť, osemnásť, devätnásť</td></tr>
+   <tr><th>20–40 · -dsať</th><td>dvadsať, tridsať, štyridsať</td></tr>
+   <tr><th>50–90 · -desiat</th><td>päťdesiat, šesťdesiat, sedemdesiat, osemdesiat, deväťdesiat · 100 sto · 1000 tisíc</td></tr>
+   <tr><th>21, 45…</th><td>${RL("слитно","one word")}: dvadsaťjeden, štyridsaťpäť</td></tr>
+  </tbody></table></div>
+  <div class="tw"><table><tbody>
+   <tr><th>1</th><td>jedno euro · jeden cent · ${RL("je jedna hodina","je jedna hodina")}</td></tr>
+   <tr><th>2–4</th><td>dve/tri/štyri eurá · dva/tri/štyri centy · sú dve hodiny</td></tr>
+   <tr><th>5+</th><td>päť eur · päť centov · je päť hodín</td></tr>
+  </tbody></table></div>
+  <div class="tw"><table><thead><tr><th>${RL("время","time")}</th><th>O koľkej?</th></tr></thead><tbody>
+   <tr><th>9.00</th><td>o deviatej (${RL("но","but")} o jednej)</td></tr>
+   <tr><th>9.30</th><td>o pol desiatej — ${RL("«пол» + следующий час","“pol” + the next hour")}</td></tr>
+   <tr><th>9.15</th><td>o štvrť na desať</td></tr>
+   <tr><th>9.45</th><td>o tri štvrte na desať</td></tr>
+  </tbody></table></div>`,
+ neg:`<h2>${RL("Отрицание","Negation")}</h2>
+  <ul class="rules">
+   <li>${RL("<b>ne-</b> пишется слитно с глаголом: <span class=\"sk\">nemám, nečítam, nebudem, nemôžem, nebol som</span>.","<b>ne-</b> is joined to the verb: <span class=\"sk\">nemám, nečítam, nebudem, nebol som</span>.")}</li>
+   <li>${RL("Исключение — <b>byť</b> в настоящем: раздельно <span class=\"sk\">nie som, nie si, nie je, nie sme, nie ste, nie sú</span>.","Exception — present <b>byť</b>: separately <span class=\"sk\">nie som, nie si, nie je …</span>.")}</li>
+   <li>${RL("В прошедшем отрицание у глагола: <span class=\"sk\">Nebol som doma. Nečítala som.</span> В будущем — у budem: <span class=\"sk\">Nebudem pracovať.</span>","In the past the verb takes ne-: <span class=\"sk\">Nebol som doma.</span> In the future budem does: <span class=\"sk\">Nebudem pracovať.</span>")}</li>
+   <li>${RL("С nikto, nič, nikdy глагол тоже отрицательный: <span class=\"sk\">Nikdy nefajčím.</span>","With nikto, nič, nikdy the verb is negative too.")}</li>
+  </ul>`,
+ refl:`<h2>${RL("Возвратные sa / si","Reflexive sa / si")}</h2>
+  <ul class="rules">
+   <li>${RL("<b>sa</b> — себя: <span class=\"sk\">umývam sa, volám sa, učím sa, teším sa</span>. <b>si</b> — себе (есть объект): <span class=\"sk\">umývam si ruky, dám si kávu, sadni si</span>.","<b>sa</b> — oneself; <b>si</b> — for oneself (with an object).")}</li>
+   <li>${RL("sa/si стоит на <b>втором месте</b> и никогда не первым: <span class=\"sk\">Umývam sa. Ráno sa umývam.</span>","sa/si takes the <b>second position</b>, never the first.")}</li>
+   <li>${RL("Будущее: <span class=\"sk\">Budem sa učiť. Zajtra sa budem učiť.</span>","Future: <span class=\"sk\">Budem sa učiť. Zajtra sa budem učiť.</span>")}</li>
+   <li>${RL("Прошедшее: сначала som/si/sme/ste, потом sa: <span class=\"sk\">Učil som sa. Včera som sa učil.</span> 3-е лицо без som: <span class=\"sk\">Učil sa.</span>","Past: som/si/sme/ste first, then sa: <span class=\"sk\">Včera som sa učil.</span>")}</li>
+  </ul>`,
+ slo:`<h2>${RL("Порядок слов","Word order")}</h2>
+  <ul class="rules">
+   <li>${RL("Вопросительное слово — первое: <span class=\"sk\">Kde bývaš? Čo robíš?</span>","The question word comes first.")}</li>
+   <li>${RL("На <b>втором месте</b> стоят короткие слова: som/si/sme/ste (прошедшее) → sa/si → ma, ťa, ho, mi, ti, mu: <span class=\"sk\">Včera som sa učil. Kedy si si kúpil auto? Vidím ho.</span>","In <b>second position</b>: som/si/sme/ste (past) → sa/si → short pronouns.")}</li>
+   <li>${RL("som в настоящем может быть первым: <span class=\"sk\">Som doma.</span> В прошедшем — нет: <span class=\"sk\">Doma som bol.</span> / <span class=\"sk\">Bol som doma.</span>","Present som can be first; past som cannot.")}</li>
+   <li>${RL("В прошедшем 3-е лицо без je/sú: <span class=\"sk\">Deti sa hrali doma.</span>","Past 3rd person has no je/sú: <span class=\"sk\">Deti sa hrali doma.</span>")}</li>
+  </ul>`,
+ nar:`<h2>${RL("Страны и национальности","Countries and nationalities")}</h2>
+  <div class="tw"><table><thead><tr><th>${RL("страна","country")} · Odkiaľ ste?</th><th>${RL("он / она","he / she")}</th><th>Ako hovoríte?</th></tr></thead><tbody>
+   <tr><td>Slovensko · zo Slovenska</td><td>Slovák / Slovenka</td><td>po slovensky</td></tr>
+   <tr><td>Česko · z Česka</td><td>Čech / Češka</td><td>po česky</td></tr>
+   <tr><td>Nemecko · z Nemecka</td><td>Nemec / Nemka</td><td>po nemecky</td></tr>
+   <tr><td>Rakúsko · z Rakúska</td><td>Rakúšan / Rakúšanka</td><td>po nemecky</td></tr>
+   <tr><td>Rusko · z Ruska</td><td>Rus / Ruska</td><td>po rusky</td></tr>
+   <tr><td>Ukrajina · z Ukrajiny</td><td>Ukrajinec / Ukrajinka</td><td>po ukrajinsky</td></tr>
+   <tr><td>Taliansko · z Talianska</td><td>Talian / Talianka</td><td>po taliansky</td></tr>
+   <tr><td>Španielsko · zo Španielska</td><td>Španiel / Španielka</td><td>po španielsky</td></tr>
+   <tr><td>Francúzsko · z Francúzska</td><td>Francúz / Francúzka</td><td>po francúzsky</td></tr>
+   <tr><td>Čína · z Číny</td><td>Číňan / Číňanka</td><td>po čínsky</td></tr>
+   <tr><td>USA · zo Spojených štátov</td><td>Američan / Američanka</td><td>po anglicky</td></tr>
+  </tbody></table></div>
+  <ul class="rules">
+   <li>${RL("z + родительный: -o → -a (Nemecko → z Nemecka), -a → -y (Čína → z Číny). Перед s, z, š, ž — <b>zo</b>.","z + genitive: -o → -a, -a → -y. Before s, z, š, ž — <b>zo</b>.")}</li>
+   <li>${RL("Национальности — с большой буквы (Slovák), прилагательные и языки — с маленькой (slovenský, po slovensky).","Nationalities are capitalised (Slovák); adjectives and languages are not (slovenský, po slovensky).")}</li>
+  </ul>`,
+ poc:`<h2>${RL("Погода","Weather")}</h2>
+  <div class="tw"><table><thead><tr><th>dnes</th><th>zajtra</th><th>včera</th></tr></thead><tbody>
+   <tr><td>prší, sneží, fúka</td><td>bude pršať, snežiť, fúkať</td><td>pršalo, snežilo, fúkalo</td></tr>
+   <tr><td>je teplo, zima, pekne</td><td>bude teplo, zima</td><td>bolo teplo · bola zima</td></tr>
+   <tr><td>je búrka (F) · mráz (M)</td><td>bude búrka, mráz</td><td>bola búrka · bol mráz</td></tr>
+  </tbody></table></div>
+  <ul class="rules">
+   <li>${RL("Без подлежащего — средний род: <span class=\"sk\">pršalo, bolo teplo</span>. С подлежащим — его род: <span class=\"sk\">bola búrka, bol mráz, bolo pekné počasie</span>.","No subject → neuter: <span class=\"sk\">pršalo</span>. With a subject → its gender: <span class=\"sk\">bola búrka, bol mráz</span>.")}</li>
+   <li>${RL("Прилагательное → наречие: <span class=\"sk\">pekné počasie → je pekne; chladné → chladno; veterné → veterno</span>.","Adjective → adverb: <span class=\"sk\">pekné → pekne; chladné → chladno</span>.")}</li>
+   <li>${RL("−5 °C — päť stupňov pod nulou; +10 °C — desať stupňov nad nulou.","−5 °C — päť stupňov pod nulou; +10 °C — desať stupňov nad nulou.")}</li>
+  </ul>`,
+ obl:`<h2>${RL("Одежда: mať, nosiť, obliekať si","Clothes: mať, nosiť, obliekať si")}</h2>
+  <ul class="rules">
+   <li>${RL("Сейчас: <b>mať oblečený/-ú/-é</b> (одежда), <b>mať obuté</b> (обувь): <span class=\"sk\">Mám oblečenú košeľu. Mám obuté tenisky.</span>","Now: <b>mať oblečený/-ú/-é</b>, <b>mať obuté</b>.")}</li>
+   <li>${RL("Обычно, часто, всегда: <b>nosiť</b>: <span class=\"sk\">V zime nosím rukavice. Nikdy nenosím kravatu.</span>","Usually: <b>nosiť</b>.")}</li>
+   <li>${RL("Надевать / снимать одежду: <b>obliekať si / vyzliekať si</b>; обувь: <b>obúvať si / vyzúvať si</b>: <span class=\"sk\">Doma si obúvam papuče.</span>","Put on / take off clothes: <b>obliekať si / vyzliekať si</b>; shoes: <b>obúvať si / vyzúvať si</b>.")}</li>
+   <li>${RL("Akuzatív: <span class=\"sk\">kabát, košeľu, tričko, rukavice</span>.","Accusative: <span class=\"sk\">kabát, košeľu, tričko, rukavice</span>.")}</li>
+  </ul>`
+};
+const RULE_T={rod:["g-nom"],zam:["g-nom"],cis:["x:cis"],pre:["g-pre"],mod:["g-mod"],aku:["g-aku"],osz:["g-pron"],fut:["g-fut"],imp:["g-imp"],pret:["g-pret"],slo:["x:slo"],plu:["g-pl"],nar:["x:nar"],fon:["g-fon"],dek:["g-nom","g-aku","g-pl"],konj:["g-pre","g-fut","g-pret","g-imp"],tri:["g-tri"],
+ a2komp:["g2-komp"],a2pl:["g2-pl"],a2pre:["g-pre"],a2adj:["g2-adj"],a2pret:["g2-pret"],a2lok:["g2-lok"],a2imp:["g2-pret"],a2fut:["g2-fut"],a2ins:["g2-ins"],a2neu:["g2-neu"],a2poc:["x:poc"],a2gen:["g2-gen"],a2genk:["g2-gen"],a2dat:["g2-dat"],a2pos:["g2-pos"],a2refl:["g2-refl"],a2obl:["x:obl"],a2ord:["g2-ord"],a2smer:["g2-smer"],a2slo:["g2-slo"]};
+const RULE_WS={p1:["g-pre"],p2:["g-pre"],p3:["g-pre"],p4:["x:neg","g-pre"],p5:["x:refl","g-pre"],p6:["g-mod"],p7:["g-pre"],f1:["g-fut"],f2:["g-fut"],f3:["g-fut"],f4:["x:refl","g-fut"],f5:["g-fut"],f6:["g-fut"],f7:["g-fut"],m1:["g-pret"],m2:["g-pret"],m3:["g-pret"],m4:["x:refl","g-pret"],m5:["x:neg","g-pret"],i1:["g-imp"],a1:["g-aku","g-pron"],n1:["g-pl"],n2:["g-pl"],k1:["x:nar"],
+ a2w1:["g2-komp"],a2w2:["g2-komp"],a2w3:["g2-komp"],a2w4:["g2-pl"],a2w5:["g2-lok"],a2w6:["g2-pret"],a2w7:["g2-pret"],a2w8:["g2-ins"],a2w9:["g2-fut"],a2w10:["g2-neu"],a2w11:["x:poc"],a2w12:["g2-gen"],a2w13:["g2-gen"],a2w14:["g2-dat"],a2w15:["g2-pos"],a2w16:["x:obl"],a2w17:["g2-ord"],a2w18:["g2-smer"]};
+const RULE_TR={build:["x:slo"],decl:["g-nom","g-aku","g-pl"],tense:["g-fut","g-pret"],num:["x:cis"],kra:["x:nar"],pad:["g2-pady"],komp:["g2-komp"]};
+Object.assign(U,{ruleBtn:["Правило","Rule"],ruleTitle:["Правило и материалы по теме","Rule and materials"],ruleOpen:["Открыть в «Грамматике» →","Open in Grammar →"],ruleClose:["Закрыть","Close"]});
+function ruleKeysTr(){if(trMode==="conj"){const m={pres:"g-pre",fut:"g-fut",past:"g-pret",imp:"g-imp"};const k=[...trT].map(t=>m[t]).filter(Boolean);return k.length?k:["g-pre"]}return RULE_TR[trMode]||null}
+const ruleDlg=document.createElement("dialog");ruleDlg.id="ruleDlg";ruleDlg.className="ruledlg";document.body.appendChild(ruleDlg);
+ruleDlg.addEventListener("click",e=>{if(e.target===ruleDlg)ruleDlg.close()});
+function openRule(keys){if(!keys||!keys.length)return;
+  let html="",first=null;
+  keys.forEach(k=>{if(k.startsWith("x:")){html+=`<section class="gram rulesec">${RULE_X[k.slice(2)]}</section>`;return}
+    const sec=document.getElementById(k);if(!sec)return;if(!first)first=k;const c=sec.cloneNode(true);c.removeAttribute("id");c.classList.remove("panel");c.classList.add("rulesec");c.querySelectorAll("[data-quiz]").forEach(b=>b.remove());html+=c.outerHTML});
+  ruleDlg.innerHTML=`<div class="rulehead"><b>${u("ruleTitle")}</b><button class="rulex" type="button" aria-label="${u("ruleClose")}">✕</button></div><div class="rulebody">${html}</div>${first?`<div class="rulefoot"><button class="linkbtn" type="button" data-go="${first}">${u("ruleOpen")}</button></div>`:""}`;
+  ruleDlg.querySelector(".rulex").onclick=()=>ruleDlg.close();
+  const g=ruleDlg.querySelector("[data-go]");if(g)g.onclick=()=>{ruleDlg.close();location.hash=g.dataset.go};
+  if(typeof ruleDlg.showModal==="function")ruleDlg.showModal();else ruleDlg.setAttribute("open","");
+  ruleDlg.querySelector(".rulebody").scrollTop=0}
+function ruleBtn(id){const b=document.createElement("button");b.type="button";b.className="rulebtn";b.id=id;b.textContent="!";b.title=u("ruleBtn");b.setAttribute("aria-label",u("ruleBtn"));return b}
+// quiz
+const qRule=ruleBtn("qRule");{const t=$("#qTag"),w=document.createElement("span");w.className="qtagwrap";t.before(w);w.append(t,qRule)}
+qRule.onclick=()=>{const q=run&&run.list[run.idx];if(q)openRule(RULE_T[q.t])};
+const _renderQ=renderQ;renderQ=function(){_renderQ();const q=run.list[run.idx];qRule.hidden=!!run.exam||!RULE_T[q.t]};
+// písomný test
+const wsRule=ruleBtn("wsRule");$("#wsTitle").parentNode.classList.add("wshead");$("#wsTitle").before(wsRule);
+wsRule.onclick=()=>{if(curWs)openRule(RULE_WS[curWs.id])};
+const _openWs=openWs;openWs=function(w){_openWs(w);wsRule.hidden=!RULE_WS[w.id]};
+// trainer
+const trRule=document.createElement("button");trRule.type="button";trRule.className="btn ghost sm trrule";trRule.innerHTML=`<span class="rulebtn" aria-hidden="true">!</span><span data-k="ruleBtn">${u("ruleBtn")}</span>`;
+$("#trMode").after(trRule);trRule.onclick=()=>openRule(ruleKeysTr());
+const _setTrMode=setTrMode;setTrMode=function(m){_setTrMode(m);trRule.hidden=!ruleKeysTr()};
+
 /* ---------- EXAM + PROGRESS ---------- */
 Object.assign(U,{
  exam:["Режим экзамена","Exam mode"],examInfo:["30 вопросов · 20 минут · без подсказок","30 questions · 20 minutes · no hints"],
@@ -3003,7 +3132,7 @@ function qRecord(q,ok){const s=qstat[q.id]||[0,0];s[1]++;if(ok)s[0]++;qstat[q.id
 function examRecord(ok,given){const q=run.list[run.idx];run.res.push({q,ok,given});dayInc("quiz");qRecord(q,ok);if(ok)mistakes.delete(q.id);else mistakes.add(q.id);store.set("sk_mist",[...mistakes]);next()}
 function gradeOf(p){return p>=91?"A":p>=81?"B":p>=71?"C":p>=61?"D":p>=51?"E":"FX"}
 function startExam(){
-  start(shuffle(Q.filter(qOK)).slice(0,30));run.exam=true;run.end=Date.now()+20*60000;
+  start(shuffle(Q.filter(qOK)).slice(0,30));run.exam=true;run.end=Date.now()+20*60000;{const rb=$("#qRule");if(rb)rb.hidden=true}
   const t=$("#qTimer");t.hidden=false;clearInterval(timerId);
   const tick=()=>{const left=Math.max(0,run.end-Date.now()),m=Math.floor(left/60000),s=Math.floor(left%60000/1000);t.textContent=`${m}:${String(s).padStart(2,"0")}`;t.classList.toggle("low",left<120000);if(!left){clearInterval(timerId);run.timeUp=true;finish()}};
   tick();timerId=setInterval(tick,1000);
