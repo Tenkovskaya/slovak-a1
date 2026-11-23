@@ -1,7 +1,7 @@
 {
-  "name": "Slovenčina A1",
-  "short_name": "Slovenčina A1",
-  "description": "Подготовка к тесту по словацкому A1 / Slovak A1 test practice",
+  "name": "Slovenčina A1 · A2",
+  "short_name": "Slovenčina",
+  "description": "Подготовка к тесту по словацкому A1 и A2 / Slovak A1 and A2 test practice",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
